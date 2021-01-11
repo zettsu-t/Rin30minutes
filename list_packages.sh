@@ -11,5 +11,3 @@ echo "R and C++ package:: names in r_in_30minutes.Rmd"
 egrep -o "\\b(\\w*::)" r_in_30minutes.Rmd | sort | uniq
 echo
 
-
-

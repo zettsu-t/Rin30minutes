@@ -56,19 +56,9 @@ library(xfun)
 
 ## 準備
 
-[R](https://cran.r-project.org/bin/windows/base/) と [RStudio](https://rstudio.com/products/rstudio/) をインストールする。そのあと必要なパッケージをインストールする。
+本文書の[GitHubレポジトリ](https://github.com/zettsu-t/Rin30minutes)に、インストール手順があるのでそれに従う。
 
-```{r install, eval=FALSE, echo=TRUE}
-install.packages("assertthat")
-install.packages("functional")
-install.packages("extrafont")
-install.packages("plotly")
-install.packages("rlang")
-install.packages("tidyverse")
-install.packages("RColorBrewer")
-```
-
-以下のコードをRStudioのConsoleに順に入力して実行する。Rスクリプトを実行するときは、拡張 .R のファイルにコードを書いて、シェルからRscriptを起動する。
+準備ができたら、以下のコードをRStudioのConsoleに順に入力して実行する。Rスクリプトを実行するときは、拡張 .R のファイルにコードを書いて、シェルからRscriptを起動する。
 
 ## プログラミング言語Rの基本
 
@@ -99,7 +89,14 @@ is.null(0)
 is.null(NULL)
 ```
 
-一般的にNAとの計算結果はNAになる。この点は、C++の boost::tribool に近い。
+一般的にNAとの計算結果はNAになる。
+
+```{r na_integer}
+2 + NA
+2 > NA
+```
+
+以下の結果は、C++の boost::tribool に近い。
 
 ```{r na_tribool}
 TRUE & NA
@@ -210,6 +207,32 @@ c(10, 20, 30) + 4
 rep(4, 3)
 ```
 
+### Assertion
+
+Pythonでは、()をつけずにassertを書く。
+
+```{python assert_python, result="asis"}
+assert 2 ** 4 == 16
+```
+
+```{python assertion_failed_python, error=TRUE, result="asis"}
+assert 2 ** 4 != 16
+```
+
+Rではassertthatを使う。パッケージを使う前にimportするのは、Pythonと同様である。
+
+```{r library_assert_r, message=FALSE, warning=FALSE}
+library(assertthat)
+```
+
+```{r assert_r}
+assertthat::assert_that((2**4) == 16)
+```
+
+```{r assertion_failed_r, error=TRUE}
+assertthat::assert_that((2**4) != 16)
+```
+
 ### ベクトルの要素数とrange
 
 要素数はNROW()で調べる。length()もあるが忘れていい。
@@ -220,7 +243,7 @@ NROW(4)
 NROW(c())
 ```
 
-Pythonのrangeてきな連番を作ろう。要素数n個のベクトルvに対して 1, 2, ..., n という連番の整数は、 seq_len(n) で作る。seq_len(NROW(c(10, 20, 30)))は要素が3個なのでc(1, 2, 3)になる。seq_len(NROW(c()))は空ベクトルが返る。Pythonと異なりRは閉区間であり、区間の開始と終了の両方を要素に含む。
+Pythonのrangeてきな連番を作ろう。要素数n個のベクトルvに対して 1, 2, ..., n という連番の整数は、 seq_len(n) で作る。seq_len(NROW(c(10, 20, 30)))は要素が3個なのでc(1, 2, 3)になる。seq_len(NROW(c()))は空ベクトルが返る。
 
 ```{r seq_len_vector_int}
 seq_len(NROW(c(10, 20, 30)))
@@ -261,7 +284,7 @@ is.list(a_lst[["score"]])
 ベクトルと同様に、インデックスを指定して部分リストを得ることができる。属性名を指定してもよい。
 
 ```{r sublists}
-a_lst[1:2]
+a_lst[c(1,2)]
 a_lst[c("name", "score")]
 ```
 
@@ -298,7 +321,7 @@ assertthat::assert_that(identical(original_vec, converted_vec))
 
 ### DataFrame (tibble)
 
-```{r import_tidyverse}
+```{r import_tidyverse, warning=FALSE}
 library(tidyverse)
 ```
 
@@ -383,6 +406,8 @@ df_mat_num <- as_tibble(mat_num)
 df_mat_num
 assertthat::assert_that(identical(df_num, df_mat_num))
 ```
+
+演算、転置、3次元以上の配列の生成などはもちろんできるので、必要になったら調べればよい。
 
 ### 関数
 
@@ -527,20 +552,6 @@ outer()
 
 PythonもRも、lexical scopeの範囲は、ざっくりいうと関数(defやfunction)である。なので関数が入れ子になっている場合は、nonlocalが必要になることがある。C++は if (cond) {} や何もキーワードがつかない {} も自動変数の範囲と寿命を決めているが、Rはそうではないので注意する(ifなどはスコープを変えない)。
 
-tibbleの説明に書いたように、関数呼び出しの結果はコンソールに表示される。そのままだと大量に出力でコンソールが埋まって困ることがあるだろう。関数の結果を変数で受け止めるのが一つの方法だが、もう一つの方法は関数呼び出しの結果を invisible() で受け止めることである。
-
-いかにもわざとらしい例だが、以下の関数は要素がn個のベクトルを返し、先頭からn個(通常は1000個で打ち切り)を表示しようとするが、 invisible があると何も表示しない。
-
-```{r invisible}
-n_element_vector <- function(n) {
-  1:n
-}
-```
-
-```{r launch_invisible}
-invisible(n_element_vector(n = 2000))
-```
-
 ## いろいろな処理と込み入った話題
 
 ### 文字列処理
@@ -589,7 +600,7 @@ stringr::str_match("01Year2021", "(\\D+)(\\d+)")
 既に書いたが、logical, numeric, character の右側への変換は、必要なら暗黙に行われる。paste関数で試そう。書式を指定しなければ、よきに計らった文字列表記になる。
 
 ```{r coerce_paste}
-paste("Bool", exp(1), 2, FALSE)
+paste("Text", exp(1), 2, FALSE)
 ```
 
 リストとベクタの変換で既に示したように。型変換は一般に as.型名 でできる。Rは変数名に . を含めることができ、PythonやC++でインスタンスメソッドの前に . をつけるときのような特別な意味は . にはない。
@@ -632,7 +643,7 @@ suppressWarnings(as.numeric("abc"))
 
 ### 等差数列 {#number_sequence}
 
-Pythonのrangeと同様のことをしたければ、 seq() とか 1:n とかがある。ただしPythonのrangeと異なり、開始番号が終了番号より小さいと、1ずつ減る数列が得られる。ベクトルのインデックスを得る場合に、これだと空のベクトルのインデックスがc(1, 0)になってまずい。seq_len()を積極的に使おう。
+Pythonのrangeと同様のことをしたければ、 seq() とか 1:n とかがある。Pythonと異なりRは閉区間であり、区間の開始と終了の両方を要素に含む。また、開始番号が終了番号より小さいと、1ずつ減る数列が得られる。ベクトルのインデックスを得る場合に、これだと空のベクトルのインデックスがc(1, 0)になってまずい。seq_len()を積極的に使おう。
 
 ```{r seq_vector}
 seq(4)
@@ -661,35 +672,23 @@ purrr::map_chr(50:52, function(x) {
 })
 ```
 
-### Assertion
+これまで明言しなかったが、関数呼び出しの結果や、変数を評価した結果はコンソールに表示される。そのままだと大量の出力でコンソールが埋まって困ることがあるだろう。関数の結果を変数で受け止めるのが一つの方法だが、もう一つの方法は関数呼び出しの結果を invisible() で受け止めることである。
 
-Pythonでは、()をつけずにassertを書く。
+いかにもわざとらしい例だが、以下の例は invisible があると何も表示しないし、 invisible がなければ最大20000個(通常は1000個で打ち切り)を表示しようとする。
 
-```{python assert_python, result="asis"}
-assert 2 ** 4 == 16
-```
-
-```{python assertion_failed_python, error=TRUE, result="asis"}
-assert 2 ** 4 != 16
-```
-
-Rではassertthatを使う。パッケージを使う前にimportするのは、Pythonと同様である。
-
-```{r assert_r}
-library(assertthat)
-assertthat::assert_that((2**4) == 16)
-```
-
-```{r assertion_failed_r, error=TRUE}
-assertthat::assert_that((2**4) != 16)
+```{r launch_invisible}
+invisible(1:20000)
 ```
 
 ### 日時と時刻
 
 日時(date)と時刻(timestamp)を上手く扱うのは難しいので、よくできたパッケージを上手に使いこなす。一年の初めからどれだけの割合(0..1)が経過したか指定すると、その日時を表示する関数を作る。うるう年は考慮するがうるう秒は考慮しない。[1月4日のお昼には、もう2021年の「1%」が経過している](https://twitter.com/kuina_ch/status/1344513191707963392)のは本当だろうか?
 
-```{r elapsed_time_in_year}
+```{r library_lubridate, message=FALSE, warning=FALSE}
 library(lubridate)
+```
+
+```{r elapsed_time_in_year, message=FALSE, warning=FALSE}
 elapsed_time_in_year <- function(year, ratio) {
   epoch <- paste0(year, "-01-01 00:00:00")
   x <- lubridate::ymd_hms(epoch, tz = "Asia/Tokyo")
@@ -727,6 +726,7 @@ def doubler(x):
   for i, item in enumerate(x):
     x[i] = item * 2
   print(np.sum(x))
+  assert np.sum(x) == 20
 
 v = np.ones(10)
 doubler(v)
@@ -737,10 +737,11 @@ rで同様のコードを書くとどうなるだろうか? 忘れていたfor�
 
 ```{r double_for_r}
 doubler <- function(x) {
-  for (i in seq_len(x)) {
+  for (i in seq_len(NROW(x))) {
     x[i] = x[i] * 2
   }
   print(sum(x))
+  assertthat::assert_that(sum(x) == 20)
 }
 
 v <- rep(1, 10)
@@ -812,7 +813,7 @@ add()
 add()
 ```
 
-Rのデフォルト引数も、Pythonと同様である。
+それはさておき、Rのデフォルト引数も、見た目はPythonと同様である。
 
 ```{r default_r}
 real_to_complex <- function(real, imaginary = 0.0) {
@@ -1142,7 +1143,7 @@ assertthat::assert_that(all(dplyr::near(df_wards_calc$per_household_calc,
 
 ### それぞれの列を集計する
 
-全区の世帯数と人口を足して、横浜市全体 df_all_city と同じかどうか確かめる。
+全区の世帯数と人口を足して、横浜市全体 df_all_city と同じかどうか確かめる。 dplyr::summarize_at と sum を使って、列の全要素を足す。
 
 ```{r sum_wards}
 df_wards_sum <- df_wards_calc %>%
@@ -1160,7 +1161,7 @@ assertthat::assert_that(df_all_city$population == df_wards_sum$population)
 
 各区の合計は市全体と一致したようだ。
 
-ここでは世帯数と人口を足したが、それは区の名前、1世帯当たり人員、人口密度を足しても意味が無いからである。そして面積は足していなかった。列名を挙げるのがめんどくさければ、列が数字だったら足す、という操作をしたい。そういうときは、 dplyr::summarize と across を使う。1世帯当たり人員と人口密度を除いてから、数値つまり区の名前以外の列を足す。
+ここでは世帯数と人口を足したが、それは区の名前、1世帯当たり人員、人口密度を足しても意味が無いからである。そして面積は足していなかった。列名を挙げるのがめんどくさければ、列が数字だったら足す、という操作をしたい。そういうときは、 dplyr::summarize と across を使う。1世帯当たり人員と人口密度を除いてから、数値つまり区の名前以外の列を where(is.numeric) で選んで足す。
 
 ```{r sum_wards_all}
 df_wards_sum_all <- df_wards %>%
@@ -1312,12 +1313,17 @@ CSVファイルには、それがどんなデータかというメタデータ�
 ```{text print_chigasaki_json, code=xfun::read_utf8("incoming_metadata/chigasaki.json")}
 ```
 
-```{r read_jsons}
+```{r read_jsons, message=FALSE, warning=FALSE}
 library(jsonlite)
 data_yokohama <- jsonlite::fromJSON("incoming_metadata/yokohama.json")
 print(data_yokohama)
 data_chigasaki <- jsonlite::fromJSON("incoming_metadata/chigasaki.json")
 print(data_chigasaki)
+```
+
+class()で変数の型が分かる。
+
+```{r class_jsons, message=FALSE, warning=FALSE}
 class(data_chigasaki)
 ```
 
@@ -1352,7 +1358,7 @@ jsonlite::write_json(data_yokohama, path = out_json_filename, pretty=TRUE)
 
 ### Jupyter Notebook と R Markdown
 
-Pythonでコードを試しながら書く場合、Jupyter Notebook を使っている方が多いだろう。Jupyter Notebook とRという組み合わせも可能である。もう一つの選択肢は、 R Markdown である。まさにこの文書の元は R Markdown で、それをHTMLまたはPDFに変換したものを見ているはずである。
+Pythonでコードを試しながら書く場合、Jupyter Notebook を使っている方が多いだろう。Jupyter Notebook とRという組み合わせも可能である。もう一つの選択肢は、 R Markdown である。まさにこの文書の元は R Markdown で、それをHTMLに変換したものを見ているはずである。
 
 ### コードの整形と静的解析
 
@@ -1432,7 +1438,7 @@ import sys
 sys.version
 ```
 
-### ライセンス
+### 本文書のライセンス
 
 本 R Markdown 文書のライセンスは、この文書がある GitHub レポジトリと同じ、MITライセンスです。いろいろコードを変えて、データや表示がどう変わるかお試しください。
 
