@@ -10,12 +10,62 @@ Pythonで機械学習や統計処理をプログラマが、Rを使うために�
 
 1. [R](https://cran.r-project.org/bin/windows/base/) をインストールする
 1. [RStudio](https://rstudio.com/products/rstudio/) をインストールする
-1. Rに knitr パッケージをインストールする
-1. 読み込んでいるデータ(後述)をダウンロードする
+1. Rに [必要なパッケージ](#必要なパッケージをインストールする) をインストールする
+1. Rで [日本語フォント](#日本語フォントをインストールする) を使えるようにする
+1. 読み込んでいる [データ](#描画するデータを入手する) をダウンロードする
+1. Python, Perlおよび各種UNIXコマンドを実行できるようにする
 1. RStudioで r_in_30minutes.Rmd を開き、knitボタンを押す
 1. パッケージが足りないと言われたら、その都度インストールする
 
-図をきれいに描くために、Migu 1Mフォントをインストールして、 extrafont から使えるようにしています。Migu 1Mフォントを使えるように設定していない場合、警告が出るかもしれません。
+### 必要なパッケージをインストールする
+
+RStudioを開いて以下を実行して、 **r_in_30minutes.Rmd** が必要とするパッケージをインストールしてください。
+
+```{r}
+install.packages("tidyverse")
+install.packages("assertthat")
+install.packages("extrafont")
+install.packages("functional")
+install.packages("jsonlite")
+install.packages("kableExtra")
+install.packages("lubridate")
+install.packages("plotly")
+install.packages("RColorBrewer")
+install.packages("reticulate")
+install.packages("rlang")
+install.packages("xfun")
+install.packages("cloc", repos = c("https://cinc.rud.is", "https://cloud.r-project.org/"))
+```
+
+**r_in_30minutes.Rmd** が必要とするパッケージは、以下のbashスクリプトを実行すると得られます。 cloc パッケージはダウンロード元を指定する必要があります。
+
+```{r}
+bash list_packages.sh
+```
+
+### 日本語フォントをインストールする
+
+図をきれいに描くために、 Migu 1M フォントを使用しています。 [こちら](https://mix-mplus-ipa.osdn.jp/migu/) からダウンロードして、インストールしてください。
+
+RStudioを開いて以下を実行して、RでMigu 1M フォントが使えるようにします。この処理は数分かかります。詳しくは [こちら](https://qiita.com/zakkiiii/items/9bbfdaf46a097677205d) に説明があります。
+
+```{r}
+library(extrafont)
+extrafont::font_import()
+extrafont::loadfonts()
+View(extrafont::fonttable())
+```
+
+### RからPythonとPerlを使えるようにする
+
+Linuxであれば特に何もしなくても、RおよびRStudioからPython, Perlおよび各種UNIXコマンドを実行できるでしょう。
+
+Windowsでは環境変数 R_USER のディレクトリにある .Rprofile (なければ新規に作る)に以下のように書いてPATHを追加します。PythonはAnadonda、PerlはCygwinを想定していますので、ディレクトリ構成が異なる場合は適宜変更してください。Cygwin pythonはPython2なので、AnacondaのPython3が先に見つかるようにします。
+
+```{r}
+Sys.setenv(PATH=paste0(c("C:\\cygwin64\\bin", Sys.getenv("PATH")), sep="", collapse=";"))
+Sys.setenv(PATH=paste0(c("C:\\bin\\anaconda", Sys.getenv("PATH")), sep="", collapse=";"))
+```
 
 ## 描画するデータを入手する
 

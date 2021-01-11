@@ -20,17 +20,34 @@ classoption: xelatex,ja=standard
 urlcolor: blue
 ---
 
+```{r setup_packages, eval=FALSE, echo=FALSE}
+## knitではなく各コードチャンクを逐次実行するときは、以下を実行する
+install.packages("tidyverse")
+install.packages("assertthat")
+install.packages("cloc")
+install.packages("extrafont")
+install.packages("functional")
+install.packages("jsonlite")
+install.packages("lubridate")
+install.packages("plotly")
+install.packages("RColorBrewer")
+install.packages("rlang")
+```
+
 ```{r setup_r_packages, include=FALSE}
+## knitrで使うパッケージ
 library(kableExtra)
 library(reticulate)
+library(xfun)
 ```
 
 ```{r, echo=FALSE, eval=FALSE}
-## Windows から Python を起動するには、 .Rprofile にこう書く
-## Sys.setenv(PATH=paste0(c("C:\bin\anaconda", Sys.getenv("PATH")), sep="", collapse=";"))
-
 ## Windows から cloc 経由で Cygwin Perl を起動するには、 .Rprofile にこう書く
 ## Sys.setenv(PATH=paste0(c("C:\\cygwin64\\bin", Sys.getenv("PATH")), sep="", collapse=";"))
+
+## Windows から Python を起動するには、 .Rprofile にこう書く
+## Cygwin pythonはPython2なので、AnacondaのPython3が先に見つかるようにする
+## Sys.setenv(PATH=paste0(c("C:\\bin\\anaconda", Sys.getenv("PATH")), sep="", collapse=";"))
 
 ## .Rprofile は環境変数 R_USER のディレクトリに置くが、
 ## 環境変数 R_USER の値は C:\Users\Username\Documents がデフォルトのようだが、
@@ -49,16 +66,6 @@ install.packages("plotly")
 install.packages("rlang")
 install.packages("tidyverse")
 install.packages("RColorBrewer")
-```
-
-```{r setup, eval=FALSE, echo=FALSE}
-## 各コードチャンクを逐次実行するとき実行する
-library(assertthat)
-library(functional)
-library(extrafont)
-library(rlang)
-library(tidyverse)
-library(RColorBrewer)
 ```
 
 以下のコードをRStudioのConsoleに順に入力して実行する。Rスクリプトを実行するときは、拡張 .R のファイルにコードを書いて、シェルからRscriptを起動する。
@@ -682,6 +689,7 @@ assertthat::assert_that((2**4) != 16)
 日時(date)と時刻(timestamp)を上手く扱うのは難しいので、よくできたパッケージを上手に使いこなす。一年の初めからどれだけの割合(0..1)が経過したか指定すると、その日時を表示する関数を作る。うるう年は考慮するがうるう秒は考慮しない。[1月4日のお昼には、もう2021年の「1%」が経過している](https://twitter.com/kuina_ch/status/1344513191707963392)のは本当だろうか?
 
 ```{r elapsed_time_in_year}
+library(lubridate)
 elapsed_time_in_year <- function(year, ratio) {
   epoch <- paste0(year, "-01-01 00:00:00")
   x <- lubridate::ymd_hms(epoch, tz = "Asia/Tokyo")
@@ -729,7 +737,7 @@ rで同様のコードを書くとどうなるだろうか? 忘れていたfor�
 
 ```{r double_for_r}
 doubler <- function(x) {
-  for (i in 1:NROW(x)) {
+  for (i in seq_len(x)) {
     x[i] = x[i] * 2
   }
   print(sum(x))
@@ -754,7 +762,7 @@ doubler(rep(1, 10))
 
 ### デフォルト値
 
-Pythonで関数呼び出しに失敗した場合にデフォルト値を得ようとしたら、try-except構文を使うだろう。Rではpurrr::possiblyを使って、デフォルト値を返す関数を作る。 stop はエラーを発生させる関数である。
+Pythonで関数呼び出しに失敗した場合にデフォルト値を得ようとしたら、try-except構文を使うだろう。Rでは purrr::possibly を使って、デフォルト値を返す関数を作る。 stop はエラーを発生させる関数である。
 
 ```{r possibly, error=TRUE}
 suspicious_func <- function(x) {
@@ -872,6 +880,16 @@ Rの基本が分かったので、CSVファイルをRで読み込んで描画し
 |[人口と世帯数の推移](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/jinko-setai-suii.html)|最新版(2020年まで)|jinkosetai-sui.csv|
 |[男女別人口及び世帯数－行政区](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/suikei01.html)|令和2年9月(2020年9月)|e1yokohama2009.csv|
 
+### ディレクトリを作る
+
+CSVファイルを読んで集計した結果を出力するディレクトリを作る。既にディレクトリがあるならそのままにする。
+
+```{r mkdir}
+out_dirname <- "output"
+dir.create(out_dirname, showWarnings = FALSE)
+assertthat::assert_that(dir.exists(out_dirname))
+```
+
 ### CSVファイルを読む
 
 readr::read_csv を使う。
@@ -920,7 +938,6 @@ df_timeseries %>% head() %>% kable() %>% kable_styling()
 まず単純なグラフを描こう。横軸を年(西暦)、縦軸を人口の折れ線グラフを描く。たった3行で済む。
 
 ```{r draw_table_timeseries}
-library(ggplot2)
 g <- ggplot(df_timeseries)
 g <- g + geom_line(aes(x = Year, y = Population))
 plot(g)
@@ -990,16 +1007,17 @@ library(plotly)
 plotly::ggplotly(g)
 ```
 
-図をPNGファイルに保存するには、 ggsaveを使う。
+図をPNGファイルに保存するには、 ggsaveを使う。 file.path はディレクトリ名 `out_dirname` と ファイル名を結合する。 / で結合するよりも正しい作法である。
 
 ```{r ggsave_png, message=FALSE}
-ggsave("yokohama_population.png", plot = g, dpi = 160)
+png_filename <- file.path(out_dirname, "yokohama_population.png")
+ggsave(png_filename, plot = g, dpi = 160)
 ```
 
 png() と dev.off() で囲んでもよいが、その場合は高さと幅のピクセル数を固定する必要がある。縦横比を変えたくないときはうれしくないだろう。
 
 ```{r save_png, message=FALSE}
-png(filename = "yokohama_population.png", width = 800, height = 600)
+png(filename = png_filename, width = 800, height = 600)
 g <- ggplot(df_timeseries)
 g <- g + geom_line(aes(x = Year, y = Population))
 plot(g)
@@ -1278,38 +1296,24 @@ plot(g)
 readr::write_excel_csv を使って、BOMつきUTF-8でCSVファイルを書く。こうしておくとExcelで読める(BOMがないとExcelで読めない)。Pandasと同様、gzip形式で読み書きできる。
 
 ```{r write_group_tax_offices}
-readr::write_excel_csv(df_ward_tax_offices, path = "yokohama_tax_office.csv")
-readr::write_excel_csv(df_ward_tax_offices, path = "yokohama_tax_office.csv.gz")
+readr::write_excel_csv(df_ward_tax_offices,
+  path = file.path(out_dirname, "yokohama_tax_office.csv"))
+readr::write_excel_csv(df_ward_tax_offices,
+  path = file.path(out_dirname, "yokohama_tax_office.csv.gz"))
 ```
 
 ### JSONファイルを読み書きする
 
 CSVファイルには、それがどんなデータかというメタデータを記述しづらい。メタデータをJSONファイルに書くとよいだろう。例えば横浜市と茅ヶ崎市について、このように書く。city:漢字名、kana:かな表記、roman:ローマ字表記、designated:政令指定都市かどうか、n_wards:政令指定都市なら区の数、tax_offices:所管税務署、date:最終更新日、とする。
 
-```{text data_yokohama}
-{
-    "city" : "横浜市",
-    "kana" : "よこはま",
-    "roman" : "Yokohama",
-    "designated" : true,
-    "n_wards" : 18,
-    "tax_offices" : ["神奈川", "鶴見", "戸塚", "保土ケ谷", "緑", "横浜中", "横浜南"],
-    "date": "2021/01/01"
-}
+```{text print_yokohama_json, code=xfun::read_utf8("incoming_metadata/yokohama.json")}
 ```
 
-```{text data_chigasaki}
-{
-    "city" : "茅ヶ崎市",
-    "kana" : "ちがさき",
-    "roman" : "Chigasaki",
-    "designated" : false,
-    "tax_offices" : "藤沢",
-    "date": "2021/01/01"
-}
+```{text print_chigasaki_json, code=xfun::read_utf8("incoming_metadata/chigasaki.json")}
 ```
 
 ```{r read_jsons}
+library(jsonlite)
 data_yokohama <- jsonlite::fromJSON("incoming_metadata/yokohama.json")
 print(data_yokohama)
 data_chigasaki <- jsonlite::fromJSON("incoming_metadata/chigasaki.json")
@@ -1335,24 +1339,16 @@ data_chigasaki$n_wards
 JSONファイルを書き出してみる。
 
 ```{r write_jsons}
-jsonlite::write_json(data_yokohama, "output_yokohama.json", pretty=TRUE)
+out_json_filename <- file.path(out_dirname, "output_yokohama.json")
+jsonlite::write_json(data_yokohama, path = out_json_filename, pretty=TRUE)
 ```
 
 出力結果はこうなる。要素が1個でも配列になるのが、以下にもRらしい。
 
-```{text output_yokohama}
-{
-  "city": ["横浜市"],
-  "kana": ["よこはま"],
-  "roman": ["Yokohama"],
-  "designated": [true],
-  "n_wards": [18],
-  "tax_offices": ["神奈川", "鶴見", "戸塚", "保土ケ谷", "緑", "横浜中", "横浜南"],
-  "date": ["2021-01-01"]
-}
+```{text print_out_json, code=xfun::read_utf8(out_json_filename)}
 ```
 
-## その他ツール
+## ツール
 
 ### Jupyter Notebook と R Markdown
 
@@ -1423,7 +1419,20 @@ cloc::cloc(source = "pasteNumbers.R")
 
 本 R Markdown からHTML文書やPDF文書を生成した場合、 [横浜市のオープンデータ](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/) を編集・加工したものが埋め込まれます。これらは [利用条件等](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/opendata.html) に記載の、 CC BY 4.0 に基づいています。
 
-## ライセンス
+## その他
+
+### 実行環境
+
+```{r version_r}
+sessionInfo()
+```
+
+```{python version_python}
+import sys
+sys.version
+```
+
+### ライセンス
 
 本 R Markdown 文書のライセンスは、この文書がある GitHub レポジトリと同じ、MITライセンスです。いろいろコードを変えて、データや表示がどう変わるかお試しください。
 
