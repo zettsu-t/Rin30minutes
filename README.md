@@ -58,13 +58,24 @@ View(extrafont::fonttable())
 
 ### RからPythonとPerlを使えるようにする
 
-Linuxであれば特に何もしなくても、RおよびRStudioからPython, Perlおよび各種UNIXコマンドを実行できるでしょう。
-
-Windowsでは環境変数 R_USER のディレクトリにある .Rprofile (なければ新規に作る)に以下のように書いてPATHを追加します。PythonはAnadonda、PerlはCygwinを想定していますので、ディレクトリ構成が異なる場合は適宜変更してください。Cygwin pythonはPython2なので、AnacondaのPython3が先に見つかるようにします。
+Linuxであれば特に何もしなくても、RおよびRStudioからPython, Perlおよび各種UNIXコマンドを実行できるでしょう。Python3のコマンド名がpython以外の場合、 reticulateパッケージで [設定](https://rstudio.github.io/reticulate/articles/r_markdown.html) します。
 
 ```{r}
-Sys.setenv(PATH=paste0(c("C:\\cygwin64\\bin", Sys.getenv("PATH")), sep="", collapse=";"))
-Sys.setenv(PATH=paste0(c("C:\\bin\\anaconda", Sys.getenv("PATH")), sep="", collapse=";"))
+library(reticulate)
+reticulate::use_python("/path/to/python3")
+```
+
+Windowsでは例えば以下のように設定します。
+
+- 環境変数PATHに、Pythonへのパスを通す。Windows版 Python 3.9.1の [完全版インストーラ](https://docs.python.org/ja/3/using/windows.html#windows-full)を使った場合は、 %LOCALAPPDATA%\Programs\Python\Python39 にパスを通すと思います。
+- 環境変数PATHに、Perlへのパスを通す。ここではPerlは [ActivePerl Community Edition](https://www.activestate.com/products/perl/downloads/) を想定しています。ディレクトリ構成が異なる場合やCygwin版 Perlを使う場合は適宜変更してください。
+- 環境変数 R_USER のディレクトリにある .Rprofile (なければ新規に作る)に以下のように書いてPATHを追加します。Cygwin pythonはPython2なので、WindowsのPython3が先に見つかるようにします。
+
+```{r}
+Sys.setenv(PATH=paste0(
+  c(gsub("/", "\\", file.path(Sys.getenv("LOCALAPPDATA"),
+    "Programs", "Python", "Python39"), fixed=TRUE),
+  "C:\\Perl64\\bin", Sys.getenv("PATH")), sep="", collapse=";"))
 ```
 
 ## 描画するデータを入手する
