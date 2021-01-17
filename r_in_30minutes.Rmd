@@ -866,9 +866,29 @@ commandArgs(trailingOnly=FALSE) %>% purrr::discard(~ stringr::str_detect(.x, "\\
 commandArgs(trailingOnly=TRUE)
 ```
 
-コマンドライン引数のオプションを解析するのは、Pythonではargparseを使い、Rではoptparseを使うとよいだろう。両者はほとんど同じである。
+コマンドライン引数のオプションを解析するのは、Pythonではargparseを使い、Rではoptparseを使うとよいだろう。両者はほとんど同じである。R MarkdownをHTML化したときの引数を出したが、 R Markdown ファイルの場所がフルパスで見えてしまうのは削除した。
 
-R MarkdownをHTML化したときの引数を出したが、 R Markdown ファイルの場所がフルパスで見えてしまうのは削除した。
+RStudioでスクリプトを実行したときは、コマンドライン引数としてオプションを渡すことができない。対策としては、グローバル変数(仮に g_args と名付ける)があったらコマンドライン引数の代わりに扱い、そうでなければ実際のコマンドライン引数 commandArgs() を読む、とすればよい。変数があるかどうかは、先ほどの exists() を使う。
+
+```{r delete_command_args, eval=TRUE, echo=FALSE}
+if (exists("g_args")) {
+  rm(g_args)
+}
+```
+
+```{r select_command_args}
+get_commandline_args <- function() {
+  if (exists("g_args")) {
+    g_args
+  } else {
+    commandArgs(trailingOnly=TRUE)
+  }
+}
+
+get_commandline_args()
+g_args <- c("param1", "param2")
+get_commandline_args()
+```
 
 ## CSVファイルを読んで集計する
 
@@ -1001,7 +1021,7 @@ g <- g + theme(aspect.ratio = 0.6,
 plot(g)
 ```
 
-plotly::ggplotlyを使うと、インタラクティブに拡大縮小したり、線にカーソルを置いて各年の人口を表示できたりする。
+plotly::ggplotlyを使うと、インタラクティブに拡大縮小したり、線にカーソルを置いて各年の人口を表示できたりする。ただし、出力されるHTMLファイルが数Mbytes増えるのと、PDF化できなくなる。
 
 ```{r plotly_jp_table_timeseries, message=FALSE, warning=FALSE}
 library(plotly)
