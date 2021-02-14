@@ -4,6 +4,10 @@ Copyright (c) 2021 Zettsu Tatsuya
 
 Pythonで機械学習や統計的分析をするプログラマが、Rを使うために最低限必要なことをまとめました。
 
+## HTML版を読みたい
+
+Releases にある、 r_in_30minutes.html をダウンロードしてご覧ください。
+
 ## 本文をHTMLに変換する
 
 本文は、[R Markdown](r_in_30minutes.Rmd)で書いてあります。HTML化するためには本レポジトリをダウンロードして、同梱の **r_in_30minutes.Rmd** を以下の手順でHTMLに変換します。
