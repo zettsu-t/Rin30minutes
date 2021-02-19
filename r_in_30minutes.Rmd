@@ -1,5 +1,5 @@
 ---
-title: "Pythonプログラマが30分で分かるR"
+title: "Pythonプログラマが30分でわかるR"
 author: "Zettsu Tatsuya"
 date: '`r format(Sys.time(), "%Y/%m/%d")`'
 output:

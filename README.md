@@ -1,4 +1,4 @@
-# Pythonプログラマが30分で分かるR
+# Pythonプログラマが30分でわかるR
 
 Copyright (c) 2021 Zettsu Tatsuya
 
