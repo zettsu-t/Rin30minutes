@@ -930,7 +930,7 @@ print(df_timeseries)
 
 これは列名に ( を含むので、$の後に列名を書けないということである。
 
-```{text print_timeseries_column_error, eval=FALSE, error=TRUE}
+```{r print_timeseries_column_error, eval=FALSE, error=TRUE, results="asis"}
 df_timeseries$年（和暦）
 ```
 
@@ -1375,10 +1375,12 @@ readr::write_excel_csv(df_ward_tax_offices,
 
 CSVファイルには、それがどんなデータかというメタデータを記述しづらい。メタデータをJSONファイルに書くとよいだろう。例えば横浜市と茅ヶ崎市について、このように書く。city:漢字名、kana:かな表記、roman:ローマ字表記、designated:政令指定都市かどうか、n_wards:政令指定都市なら区の数、tax_offices:所管税務署、date:最終更新日、とする。
 
-```{text print_yokohama_json, code=xfun::read_utf8("incoming_metadata/yokohama.json")}
+```{r print_yokohama_json, echo=FALSE, comment=""}
+cat(xfun::read_utf8("incoming_metadata/yokohama.json"), sep = "\n")
 ```
 
-```{text print_chigasaki_json, code=xfun::read_utf8("incoming_metadata/chigasaki.json")}
+```{r print_chigasaki_json, echo=FALSE, comment=""}
+cat(xfun::read_utf8("incoming_metadata/chigasaki.json"), sep = "\n")
 ```
 
 ```{r read_jsons, message=FALSE, warning=FALSE}
@@ -1417,9 +1419,10 @@ out_json_filename <- file.path(out_dirname, "output_yokohama.json")
 jsonlite::write_json(data_yokohama, path = out_json_filename, pretty = TRUE)
 ```
 
-出力結果はこうなる。要素が1個でも配列になるのが、以下にもRらしい。
+出力結果はこうなる。要素が1個でも配列になるのが、いかにもRらしい。
 
-```{text print_out_json, code=xfun::read_utf8(out_json_filename)}
+```{r print_out_json, echo=FALSE, comment=""}
+cat(xfun::read_utf8(out_json_filename), sep = "\n")
 ```
 
 ## ツール
