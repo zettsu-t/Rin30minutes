@@ -1468,11 +1468,12 @@ cloc::cloc(source = "pasteNumbers.R")
 
 参考書としては、以下の順番が一案です。
 
-- 最初に読むのは、Rではじめるデータサイエンス (原著 : [R for Data Science](https://r4ds.had.co.nz/) )
-- Rをもっと使いこなすなら、Rクックブック 第2版 ( 原著 : [R Cookbook 2nd Edition](https://rc2e.com/) )
-- R StudioとR Markdownの使い方を学ぶなら、再現可能性のすゝめ ―RStudioによるデータ解析とレポート作成― (Wonderful R 3) または、 RユーザのためのRStudio［実践］入門 ―tidyverseによるモダンな分析フローの世界―
-- プログラミング言語Rを深く知りたいなら、R言語徹底解説(ただし和訳は版が古い、原著 : [Advanced R](https://adv-r.hadley.nz/) )。 [公式マニュアル](https://cran.r-project.org/manuals.html)より読みやすいと思います。
-- Rパッケージの作成を通じて、配布可能な成果物の作り方を学びたいなら、Rパッケージ開発入門 テスト、文書化、コード共有の手法を学ぶ(原著 : [R packages](http://r-pkgs.had.co.nz/) )
+- 最初に読むのは、「Rではじめるデータサイエンス」 (原著 : [R for Data Science](https://r4ds.had.co.nz/) )
+- Rをもっと使いこなすなら、「Rクックブック 第2版」 ( 原著 : [R Cookbook 2nd Edition](https://rc2e.com/) )
+- R StudioとR Markdownの使い方を学ぶなら、「再現可能性のすゝめ ―RStudioによるデータ解析とレポート作成― (Wonderful R 3)」 または、 「RユーザのためのRStudio［実践］入門 ―tidyverseによるモダンな分析フローの世界―」
+- プログラミング言語Rを深く知りたいなら、「R言語徹底解説」(ただし和訳は版が古い、原著 : [Advanced R](https://adv-r.hadley.nz/) )。 [公式マニュアル](https://cran.r-project.org/manuals.html)より読みやすいと思います。
+- Rパッケージの作成を通じて、配布可能な成果物の作り方を学びたいなら、「Rパッケージ開発入門 テスト、文書化、コード共有の手法を学ぶ」(原著 : [R packages](http://r-pkgs.had.co.nz/) )
+- ブラウザから対話的に表示を変えたいなら、Shinyの使い方を学ぶ。「RとShinyで作るWebアプリケーション」を読んでから、[Mastering Shiny](https://mastering-shiny.org/)を読むとよいでしょう。
 
 |書名|著者|年|リンク|
 |:--------------------------|:---------------------------------------------------------|:--------|:--------------------------|
@@ -1480,6 +1481,7 @@ cloc::cloc(source = "pasteNumbers.R")
 |R Cookbook 2nd Edition|James (JD) Long and Paul Teetor|2019|https://rc2e.com/|
 |Advanced R|Hadley Wickham|2019|https://adv-r.hadley.nz/|
 |R packages|Hadley Wickham|2015|http://r-pkgs.had.co.nz/|
+|Mastering Shiny|Hadley Wickham|2020|https://mastering-shiny.org/|
 
 |書名|著者|年|出版社|
 |:---------------------------------------------------------|:-------------------------------------------------|:---------|:-----------------------------|
@@ -1491,6 +1493,7 @@ cloc::cloc(source = "pasteNumbers.R")
 |みんなのR 第2版|Jared P. Lander 著/高柳慎一, 津田真樹, 牧山幸史, 松村杏子, 簑田高志 監修|2018|マイナビ出版|
 |パーフェクトR|Rサポーターズ 著|2017|技術評論社|
 |Rパッケージ開発入門 テスト、文書化、コード共有の手法を学ぶ|Hadley Wickham 著/瀬戸山雅人, 石井弓美子, 古畠敦 訳|2016|オライリー・ジャパン|
+|RとShinyで作るWebアプリケーション|梅津雄一, 中野貴広 著|2018|C&R研究所|
 
 ## データ出典 {#data_source}
 
@@ -1512,4 +1515,3 @@ sys.version
 ### 本文書のライセンス
 
 本 R Markdown 文書のライセンスは、この文書がある GitHub レポジトリと同じ、MITライセンスです。いろいろコードを変えて、データや表示がどう変わるかお試しください。
-
