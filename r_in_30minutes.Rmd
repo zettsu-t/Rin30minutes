@@ -1131,6 +1131,14 @@ rlang::expr(df_population %>%
   dplyr::filter(!!rlang::sym(ward_column_name) != "横浜市"))
 ```
 
+実は dplyr 1.0.0 から across を使えるので、ここで rlang::sym を使う必要はない。後で rlang::sym を使う場面があるので、敢えてここで使った。
+
+```{r separate_wards_again_across}
+df_wards_alt_across <- df_population %>%
+  dplyr::filter(across(all_of(ward_column_name)) != "横浜市")
+assertthat::assert_that(identical(df_wards_alt, df_wards_alt_across))
+```
+
 実は　dplyr::select は、文字列だけでなくシンボルを受け付ける。なので "" が無くてもよかった。わざとらしい例だが、複数の文字列をシンボルにするには、 rlang::syms を使う。それと、!!ではなく!!!を使う。!!と!!!は否定の否定、否定の否定の否定、ではなく演算子というのが珍しい。
 
 ```{r select_wards_again}
