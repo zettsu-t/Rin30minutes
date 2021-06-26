@@ -1372,10 +1372,10 @@ readr::write_excel_csv を使って、BOMつきUTF-8でCSVファイルを書く�
 
 ```{r write_group_tax_offices}
 readr::write_excel_csv(df_ward_tax_offices,
-  path = file.path(out_dirname, "yokohama_tax_office.csv")
+  file.path(out_dirname, "yokohama_tax_office.csv")
 )
 readr::write_excel_csv(df_ward_tax_offices,
-  path = file.path(out_dirname, "yokohama_tax_office.csv.gz")
+  file.path(out_dirname, "yokohama_tax_office.csv.gz")
 )
 ```
 
@@ -1481,7 +1481,7 @@ cloc::cloc(source = "pasteNumbers.R")
 - R StudioとR Markdownの使い方を学ぶなら、「再現可能性のすゝめ ―RStudioによるデータ解析とレポート作成― (Wonderful R 3)」 または、 「RユーザのためのRStudio［実践］入門 ―tidyverseによるモダンな分析フローの世界―」
 - プログラミング言語Rを深く知りたいなら、「R言語徹底解説」(ただし和訳は版が古い、原著 : [Advanced R](https://adv-r.hadley.nz/) )。 [公式マニュアル](https://cran.r-project.org/manuals.html)より読みやすいと思います。
 - Rパッケージの作成を通じて、配布可能な成果物の作り方を学びたいなら、「Rパッケージ開発入門 テスト、文書化、コード共有の手法を学ぶ」(原著 : [R packages](http://r-pkgs.had.co.nz/) )
-- ブラウザから対話的に表示を変えたいなら、Shinyの使い方を学ぶ。「RとShinyで作るWebアプリケーション」を読んでから、[Mastering Shiny](https://mastering-shiny.org/)を読むとよいでしょう。
+- ブラウザから対話的に表示を変えたいなら、Shinyの使い方を学ぶ。「RとShinyで作るWebアプリケーション」を読んでから、[Mastering Shiny](https://mastering-shiny.org/)を読み、そのあと[Engineering Production-Grade Shiny Apps](https://engineering-shiny.org/)を読むとよいでしょう。
 
 |書名|著者|年|リンク|
 |:--------------------------|:---------------------------------------------------------|:--------|:--------------------------|
@@ -1490,6 +1490,7 @@ cloc::cloc(source = "pasteNumbers.R")
 |Advanced R|Hadley Wickham|2019|https://adv-r.hadley.nz/|
 |R packages|Hadley Wickham|2015|http://r-pkgs.had.co.nz/|
 |Mastering Shiny|Hadley Wickham|2020|https://mastering-shiny.org/|
+|Engineering Production-Grade Shiny Apps|Colin Fay, Sébastien Rochette, Vincent Guyader and Cervan Girard|2021|https://engineering-shiny.org/|
 
 |書名|著者|年|出版社|
 |:---------------------------------------------------------|:-------------------------------------------------|:---------|:-----------------------------|
