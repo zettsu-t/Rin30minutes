@@ -8,7 +8,52 @@ Pythonで機械学習や統計的分析をするプログラマが、Rを使う�
 
 Releases にある、 r_in_30minutes.html をダウンロードしてご覧ください。
 
-## 本文をHTMLに変換する
+## RStudio環境を簡単に構築して本文をHTMLに変換する
+
+同梱のDockerfileから、Dockerコンテナを作成して、コンテナ上でRStudio Serverを起動します。
+
+### Dockerコンテナを起動する
+
+Dockerfileがあるディレクトリ( **Rin30minutes/** 直下)に移動して、Dockerコンテナをビルドします。イメージ名は **r30min** とします。動作確認を Windows 10 + Docker Desktop および WSL2 + Ubuntu 18.04 LTS で行いました。必要なら sudo をつけて実行して下さい。
+
+```{bash}
+cd /path/to/Dockerfile
+docker build -t r30min .
+```
+
+### Dockerコンテナを起動する
+
+ビルドしたのと同じディレクトリに移動して、Dockerコンテナを起動します。詳しい起動オプションは、[rocker/rstudio](https://hub.docker.com/r/rocker/rstudio)に載っています。ここでは以下の通り設定します。
+
+```{bash}
+docker run -d -p 8787:8787 -e PASSWORD=yourpass r30min
+```
+
++ -d オプションをつけて、 detached で実行する
++ RStudio Server のポートは、デフォルト通り TCP 8787 を使い、ホストOSの同一ポートから転送する
++ ログインアカウントは、イメージのデフォルトの rstudio のままにする
++ パスワードは、上記の -e PASSWORD 引数で指定する。指定しないと、RStudio Server を起動できない。
++ イメージ名はビルド時に指定した r30min とする
+
+Dockerコンテナを起動したホスト [http://example:8787/](http://example:8787/) に、Webブラウザからログインすると、RStudio Serverの画面が出ます。ホスト名は適宜読み替えてください。
+
+### 描画するデータを入手する
+
+後述の通り、描画するデータを横浜市のオープンデータのサイトからダウンロードします。敢えてDockerコンテナのビルド時ではなく、実行時にダウンロードするようにしています。
+
+RStudio Server上で **download_data.R** を開き、Ctrl-Alt-R を押してこのRスクリプトを実行します。ダウンロードに成功したら、**incoming_yokohama** サブディレクトリにCSVファイルが2つできています。
+
+### HTMLに変換する
+
+RStudio Server上で **r_in_30minutes.Rmd** を開き、**Knit** ボタンを押してHTMLに変換します。HTML文書が別ウィンドウで表示されますが、Webブラウザがポップアップウィンドウをブロックすると思いますので、ブロックを解除してください。
+
+変換後のHTMLファイルを、DockerコンテナからホストOSに移動することもできます。そのためにはDockerコンテナを起動する時に、ホストOSのファイルシステムをDockerコンテナにマウントする必要があります。具体的な方法は別途検索ください。おそらく、コンテナ上のユーザ rstudio と、ホストOSのユーザアカウントをあわせる必要があるでしょう。
+
+### Dockerfileは何をしているか
+
+以下の設定を行います。加えて、ロケールを ja_JP.UTF-8 に変更しています。ロケールの設定が無いと、環境によっては日本語の出力が文字化けするかもしれません。
+
+## RStudio環境をstep-by-stepで構築して本文をHTMLに変換する
 
 本文は、[R Markdown](r_in_30minutes.Rmd)で書いてあります。HTML化するためには本レポジトリをダウンロードして、同梱の **r_in_30minutes.Rmd** を以下の手順でHTMLに変換します。
 
@@ -82,7 +127,9 @@ Sys.setenv(PATH=paste0(
   "C:\\Perl64\\bin", Sys.getenv("PATH")), sep="", collapse=";"))
 ```
 
-## 描画するデータを入手する
+NumPyがインストールされていなければ、インストールしてください。
+
+### 描画するデータを入手する
 
 **r_in_30minutes.Rmd** からHTML文書を生成すると、 [横浜市のオープンデータ](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/) を編集・加工したものが埋め込まれます。これらは [利用条件等](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/opendata.html) に記載の、 CC BY 4.0 に基づいています。
 
