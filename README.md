@@ -35,7 +35,7 @@ docker run -d -p 8787:8787 -e PASSWORD=yourpass r30min
 + パスワードは、上記の -e PASSWORD 引数で指定する。指定しないと、RStudio Server を起動できない。
 + イメージ名はビルド時に指定した r30min とする
 
-Dockerコンテナを起動したホスト [http://example:8787/](http://example:8787/) に、Webブラウザからログインすると、RStudio Serverの画面が出ます。ホスト名は適宜読み替えてください。
+Dockerコンテナを起動したホスト [http://example.com:8787/](http://example.com:8787/) に、Webブラウザからログインすると、RStudio Serverの画面が出ます。ホスト名は適宜読み替えてください。
 
 ### 描画するデータを入手する
 
