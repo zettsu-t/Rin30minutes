@@ -12,7 +12,7 @@ Releases にある、 r_in_30minutes.html をダウンロードしてご覧く�
 
 同梱のDockerfileから、Dockerコンテナを作成して、コンテナ上でRStudio Serverを起動します。
 
-### Dockerコンテナを起動する
+### Dockerコンテナをビルドする
 
 Dockerfileがあるディレクトリ( **Rin30minutes/** 直下)に移動して、Dockerコンテナをビルドします。イメージ名は **r30min** とします。動作確認を Windows 10 + Docker Desktop および WSL2 + Ubuntu 18.04 LTS で行いました。必要なら sudo をつけて実行して下さい。
 
