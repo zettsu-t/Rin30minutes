@@ -1,0 +1,13 @@
+FROM r30min
+
+## Install a package that Stan and cmdstanr require
+RUN apt-get install -y libtbb2 libxt-dev
+
+## Install R Packages without specifying their versions
+RUN Rscript -e 'remotes::install_version("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))'
+RUN Rscript -e 'remotes::install_version("posterior")'
+RUN Rscript -e 'remotes::install_version("bayesplot")'
+
+## Create a mount point
+ARG R_USERNAME=rstudio
+RUN mkdir -p "/home/${R_USERNAME}/work"
