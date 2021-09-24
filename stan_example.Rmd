@@ -150,19 +150,78 @@ bayesplot::color_scheme_set("brightblue")
 ```
 
 ```{r draw_rhat, message=FALSE, warning=FALSE, cache=TRUE}
-mcmc_rhat(rhat(fit))
+bayesplot::mcmc_rhat(rhat(fit))
 ```
 
 Stanモデルのパラメータの事後分布をみる。元の分布と大体同じである。
 
 ```{r draw_hist, message=FALSE, warning=FALSE, cache=TRUE}
-mcmc_hist(fit$draws("mus"))
-mcmc_hist(fit$draws("sigma_s"))
-mcmc_hist(fit$draws("sigma_l"))
-mcmc_hist(fit$draws("theta"))
+bayesplot::mcmc_hist(fit$draws("mus"))
+bayesplot::mcmc_hist(fit$draws("sigma_s"))
+bayesplot::mcmc_hist(fit$draws("sigma_l"))
+bayesplot::mcmc_hist(fit$draws("theta"))
 
-mcmc_trace(fit$draws("mus"))
-mcmc_trace(fit$draws("sigma_s"))
-mcmc_trace(fit$draws("sigma_l"))
-mcmc_trace(fit$draws("theta"))
+bayesplot::mcmc_trace(fit$draws("mus"))
+bayesplot::mcmc_trace(fit$draws("sigma_s"))
+bayesplot::mcmc_trace(fit$draws("sigma_l"))
+bayesplot::mcmc_trace(fit$draws("theta"))
+```
+
+## サンプルを取得して描画する
+
+bayesplot::mcmc_hist を使う代わりに、 cmdstanr::CmdStanMCMC\$draws でサンプルを取得して描画する。サンプルは三次元配列で、 iteration, chain, および variable の三要素から成る。
+
+平均値モデルパラメータについて、MCMCサンプルの分布(曲線)、MCMCサンプルの平均(実線の縦線)、標本平均(破線の縦線を示す)。
+
+```{r extract_samples, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
+extract_samples <- function(fit, var_name) {
+  sample_set <- fit$draws()
+  var_indexes <- which(purrr::map_lgl(fit$metadata()$model_params,
+                       ~ stringr::str_detect(.x, var_name)))
+  as.vector(matrix(sample_set[, , var_indexes], ncol = 1))
+}
+```
+
+```{r draw_mus, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
+df_mu1_sample <- tibble::tibble(y = extract_samples(fit = fit, var_name = "mu.*1"),
+                                label = "mu1")
+df_mu2_sample <- tibble::tibble(y = extract_samples(fit = fit, var_name = "mu.*2"),
+                                label = "mu2")
+df_mus_sample <- dplyr::bind_rows(df_mu1_sample, df_mu2_sample) %>%
+  dplyr::mutate(label = factor(label))
+
+g <- ggplot(df_mus_sample)
+g <- g + stat_density(aes(x = y, color = label), geom = "line", position = "identity")
+g <- g + xlim(c(-0.5, 3.0))
+g <- g + scale_color_manual(values = c("royalblue3", "orange"))
+g <- g + geom_vline(xintercept = mean(df_mu1_sample$y), color = "navy")
+g <- g + geom_vline(xintercept = mean(df_small$y), color = "navy", linetype = "dashed")
+g <- g + geom_vline(xintercept = mean(df_mu2_sample$y), color = "orange4")
+g <- g + geom_vline(xintercept = mean(df_large$y), color = "orange4", linetype = "dashed")
+g <- g + xlab("mus")
+plot(g)
+```
+
+分散と混合比のモデルパラメータも同様に示す(MCMCサンプルの分布:曲線、MCMCサンプルの平均値:実線の縦線、標本の値:破線の縦線)。
+
+```{r draw_others, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
+draw_samples <- function(fit, var_name, x_pos, curve_color, line_color) {
+  df <- tibble::tibble(y = extract_samples(fit = fit, var_name = var_name))
+  g <- ggplot(df)
+  g <- g + stat_density(aes(x = y), color = curve_color, geom = "line", position = "identity")
+  g <- g + geom_vline(xintercept = mean(df$y), color = line_color)
+  g <- g + geom_vline(xintercept = x_pos, color = line_color, linetype = "dashed")
+  g <- g + xlab(var_name)
+  plot(g)
+}
+
+draw_samples(fit = fit, var_name = "sigma_s", x_pos = sd(df_small$y),
+  curve_color = "royalblue3", line_color = "navy")
+
+draw_samples(fit = fit, var_name = "sigma_l", x_pos = sd(df_large$y),
+  curve_color = "orange", line_color = "orange4")
+
+draw_samples(fit = fit, var_name = "theta",
+  x_pos = NROW(df_small)/(NROW(df_small) + NROW(df_large)),
+  curve_color = "gray30", line_color = "black")
 ```
