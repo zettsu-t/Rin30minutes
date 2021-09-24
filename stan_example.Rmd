@@ -43,18 +43,21 @@ docker run -e PASSWORD=yourpassword -p 8787:8787 -d -v C:/path/to/Rin30minutes:/
 
 ## Stanを使う準備をする
 
-本 R Markdown ファイルをknitすると、下記の内容に従って cmdstan をインストールするので注意すること。
-
 ### Rのパッケージを使う
 
-Stanをインストールする。
-
-```{r setup_stan, message=FALSE, warning=FALSE, cache=FALSE}
+```{r setup_packages, message=FALSE, warning=FALSE, cache=FALSE}
 library(tidyverse)
 library(cmdstanr)
 library(posterior)
 library(bayesplot)
-invisible(install_cmdstan())
+```
+
+### Stanをインストールする。
+
+Dockerイメージを作成するときに、下記を実行してrstudioユーザ権限でStanをインストールした。下記ではコメントアウトしたが、# を外して 本 R Markdown ファイルをknitすると cmdstan をインストールする。
+
+```{r setup_stan, message=FALSE, warning=FALSE, cache=FALSE}
+# cmdstanr::install_cmdstan()
 ```
 
 ### モデルをコンパイルする
