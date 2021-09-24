@@ -4,6 +4,7 @@ author: "Zettsu Tatsuya"
 date: '`r format(Sys.time(), "%Y/%m/%d")`'
 output:
   html_document:
+    self_contained: true
     toc: true
     toc_float: true
     toc_collapsed: true
@@ -32,6 +33,7 @@ install.packages("lubridate")
 install.packages("plotly")
 install.packages("RColorBrewer")
 install.packages("rlang")
+install.packages("R6")
 ```
 
 ```{r setup_r_packages, include=FALSE}
@@ -708,9 +710,71 @@ hms_to_seconds("00:01:04")
 hms_to_seconds("01:00:04")
 ```
 
+### クラス
+
+PythonやC++てきなクラス、つまりクラスにメンバ関数とメンバ変数を定義したデータ構造をRでも作れる。まずPythonでカウンターを作る例を示す。
+
+```{python counter_class_python, result="asis"}
+class Counter:
+    """A classic example of classes"""
+    __count = 0
+
+    def __init__(self):
+        """Initialize member variable(s)"""
+        self.__count = 0
+
+    def increment(self):
+        """Increment the count"""
+        self.__count = self.__count + 1
+
+    def get(self):
+        """Get the count"""
+        return self.__count
+
+ct = Counter()
+print(ct.get())
+ct.increment()
+ct.increment()
+print(ct.get())
+```
+
+RではR6を使う。ほぼPythonと同様に書ける。publicとprivateと明記するところがC++みたいだ。
+
+```{r counter_class_r6}
+library(R6)
+
+Counter <- R6::R6Class("Counter",
+  public = list(
+    # Initialize member variable(s)
+    initialize = function() {
+      private$count <- 0
+    },
+
+    # Increment the count
+    increment = function() {
+      private$count <- private$count + 1
+    },
+
+    # Get the count
+    get = function() {
+      private$count
+    }
+  ),
+  private = list(
+    count = 0
+  )
+)
+
+ct = Counter$new()
+print(ct$get())
+ct$increment()
+ct$increment()
+print(ct$get())
+```
+
 ### 参照渡しと copy-on-modify
 
-Rでは、呼び出された関数は引数を変更できるが、その変更は呼び出し側には伝わらない。これはPythonとの大きな違いである。より正確に言うと、引数を変更するとcopy-on-modifyされる。変更しなければcopyのコストが発生しないので、実質的には低コストな参照渡しのように動作する。
+Rでは、呼び出された関数は引数を変更できるが、その変更は呼び出し側には伝わらない(そうでない場合についてはすぐ後で述べる)。これはPythonとの大きな違いである。より正確に言うと、引数を変更するとcopy-on-modifyされる。変更しなければcopyのコストが発生しないので、実質的には低コストな参照渡しのように動作する。
 
 Pythonで、配列の要素をすべて2倍にするとき、こう書ける。
 
@@ -754,6 +818,31 @@ doubler <- function(x) {
 }
 
 doubler(rep(1, 10))
+```
+
+クラスのインスタンス(R6オブジェクト)は参照渡しである。呼び出された関数が引数に変更を加えると、引数を渡した呼び出し側にも変更が反映される。
+
+```{r call_by_reference_r6}
+increment_in_callee <- function(obj) {
+  obj$increment()
+  print(obj$get())
+}
+
+ct_caller <- Counter$new()
+invisible(increment_in_callee(ct_caller))
+print(ct_caller$get())
+```
+
+Pythonも参照渡しなので、参照渡しの方がなじみがあるだろう。
+
+```{python call_by_reference_python, result="asis"}
+def increment_in_callee(obj):
+    obj.increment()
+    print(obj.get())
+
+ct_caller = Counter()
+increment_in_callee(ct_caller)
+print(ct_caller.get())
 ```
 
 ### デフォルト値

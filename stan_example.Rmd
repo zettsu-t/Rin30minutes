@@ -38,7 +38,7 @@ RStudioにログインするとき、Username は rstudio 、PasswordはDocker�
 ```{bash docker, eval=FALSE, echo=TRUE, cache=FALSE}
 docker build -t r30min .
 docker build -f Dockerfile_stan -t stan .
-docker run -e PASSWORD=yourpassword -p 8787:8787 -d -v C:/path/to/Rin30minutes:/home/rstudio/work -it stan
+docker run -e PASSWORD=yourpassword -p 8787:8787 -d -v C:/path/to/Rin30minutes:/home/rstudio/work stan
 ```
 
 ## Stanを使う準備をする

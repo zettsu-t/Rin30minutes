@@ -26,13 +26,13 @@ docker build -t r30min .
 ビルドしたのと同じディレクトリに移動して、Dockerコンテナを起動します。詳しい起動オプションは、[rocker/rstudio](https://hub.docker.com/r/rocker/rstudio)に載っています。ここでは以下の通り設定します。
 
 ```{bash}
-docker run -d -p 8787:8787 -e PASSWORD=yourpass r30min
+docker run -e PASSWORD=yourpassword -p 8787:8787 -d r30min
 ```
 
-+ -d オプションをつけて、 detached で実行する
-+ RStudio Server のポートは、デフォルト通り TCP 8787 を使い、ホストOSの同一ポートから転送する
-+ ログインアカウントは、イメージのデフォルトの rstudio のままにする
++ ログインアカウントは、Dockerイメージのデフォルト設定である rstudio のままにする
 + パスワードは、上記の -e PASSWORD 引数で指定する。指定しないと、RStudio Server を起動できない。
++ RStudio Server のポートは、デフォルト通り TCP 8787 を使い、ホストOSの同一ポートから転送する
++ -d オプションをつけて、 detached で実行する
 + イメージ名はビルド時に指定した r30min とする
 
 Dockerコンテナを起動したホスト [http://example.com:8787/](http://example.com:8787/) に、Webブラウザからログインすると、RStudio Serverの画面が出ます。ホスト名は適宜読み替えてください。
@@ -146,4 +146,11 @@ NumPyがインストールされていなければ、インストールしてく
 
 ## Rプログラマが30分ではじめるStan
 
-R から Stan を使う方法を stan_example.Rmd に書きました。 Releases に含めましたのでご覧ください。
+R から Stan を使う方法を stan_example.Rmd に書きました。 Releases に含めましたのでご覧ください。Dockerコンテナをビルド、起動するには、以下のコマンドを実行します。
+
+```{bash}
+cd /path/to/Dockerfile
+docker build -t r30min .
+docker build -f Dockerfile_stan -t stan .
+docker run -e PASSWORD=yourpassword -p 8787:8787 -d stan
+```
