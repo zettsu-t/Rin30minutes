@@ -21,6 +21,24 @@ classoption: xelatex,ja=standard
 urlcolor: blue
 ---
 
+```{css, echo=FALSE}
+.python-code {
+  background-color: lavender
+}
+
+.r-code {
+  background-color: seashell
+}
+
+.python-output {
+  background-color: #ececec
+}
+
+.r-output {
+  background-color: #f9f9f9
+}
+```
+
 ```{r setup_packages, eval=FALSE, echo=FALSE}
 ## knitではなく各コードチャンクを逐次実行するときは、以下を実行する
 install.packages("tidyverse")
@@ -61,19 +79,19 @@ library(xfun)
 
 まずPythonの実行結果を示す。
 
-```{python add_int_bool_python, result="asis"}
+```{python add_int_bool_python, result="asis", class.source="python-code", class.output="python-output"}
 2 + True
 ```
 
 次にRの実行結果を示す。出力の先頭に [1] がついているが、これについては後述する。
 
-```{r add_int_bool_r}
+```{r add_int_bool_r, class.source="r-code", class.output="r-output"}
 2 + TRUE
 ```
 
 NA (欠測値 : missing value)と、変数が無い(NULL)ことを区別する。変数がNAかどうかは is.na で、NULLかどうかは in.null で調べる(細かい仕様は省略)。
 
-```{r is_na}
+```{r is_na, class.source="r-code", class.output="r-output"}
 is.na(0)
 is.na(NA)
 is.null(0)
@@ -82,14 +100,14 @@ is.null(NULL)
 
 一般的にNAとの計算結果はNAになる。
 
-```{r na_integer}
+```{r na_integer, class.source="r-code", class.output="r-output"}
 2 + NA
 2 > NA
 ```
 
 以下の結果は、C++の boost::tribool に近い。
 
-```{r na_tribool}
+```{r na_tribool, class.source="r-code", class.output="r-output"}
 TRUE & NA
 TRUE | NA
 FALSE & NA
@@ -100,7 +118,7 @@ NAは logical, numeric, character と、それぞれの型に用意されてい�
 
 数値が NA (欠測値)、正の無限大 Inf、負の無限大 -Inf、NaN (非数 : Not a Number)であることを区別する。is.na, is.infinite, is.nan を使って調べる。 == では比較しないことに注意する。RはNAとNaNを区別するので便利である(入力値が欠測なことと、計算結果がNaNであることは別なので)。
 
-```{r is_inf_nan}
+```{r is_inf_nan, class.source="r-code", class.output="r-output"}
 is.infinite(0)
 is.infinite(Inf)
 Inf > 0
@@ -112,20 +130,20 @@ is.nan(NaN)
 
 関数の説明は、? + 関数名で得られる。R Consoleから ?is.na と入力すると、 is.na の説明が表示される。ネットで探すよりも速い。
 
-```{r help_is_nan, eval=FALSE, echo=TRUE}
+```{r help_is_nan, eval=FALSE, echo=TRUE, class.source="r-code", class.output="r-output"}
 ?is.na
 ```
 
 Rにスカラー変数はない。C++の std::vector てきな集合、つまり型が等しい複数の要素を、インデックスで参照できる集合が、ベクトルとして用意されている。なのでスカラー変数に見えるものは、要素が1個のベクトルである。変数への代入は \<- で行う。Getsと発音する。Pythonと同様に=でも代入できるが、 \<- の方が見やすいだろう。
 
-```{r assign_int}
+```{r assign_int, class.source="r-code", class.output="r-output"}
 n <- 2
 n * 3
 ```
 
 複数の即値つまりからベクトルを作るには、 c(15, 26, 37, 48) というようにc()を使う。cはcombineの略である。ベクトルというか配列を作るのに[]を使う言語が多いのでちょっと変わっているが、すぐ慣れるだろう。
 
-```{r assign_vector}
+```{r assign_vector, class.source="r-code", class.output="r-output"}
 score_vec <- c(15, 26, 37, 48)
 name_vec <- c("foo", "bar", "hoge")
 score_vec
@@ -136,32 +154,32 @@ name_vec
 
 ベクトルに限らず、配列らしくインデックスがついているデータ(PandasのDataFrameてきなものも含む)の要素は、1始まりで数える。つまりベクトルvの先頭の要素は、 v[1] で読み書きする。PythonやCなど多くの言語は0始まりだが、Rは異なる(FortranやStanも1始まり)。
 
-```{r vector_element}
+```{r vector_element, class.source="r-code", class.output="r-output"}
 score_vec[1]
 name_vec[2]
 ```
 
 Pythonと同様、複数の値を指定することもできる。
 
-```{r vector_elements}
+```{r vector_elements, class.source="r-code", class.output="r-output"}
 score_vec[c(1, 4)]
 ```
 
 負の値を指定すると、指定したインデックス以外を選ぶ。つまり除外するインデックスを指定することができる。
 
-```{r vector_exclude_elements}
+```{r vector_exclude_elements, class.source="r-code", class.output="r-output"}
 score_vec[c(-2, -3)]
 ```
 
 0を指定すると何も選ばない。PythonやC++の癖で、先頭要素を0にするとこうなる。敢えて0を含めることで条件分岐を省けることがあるかもしれない。
 
-```{r vector_no_elements}
+```{r vector_no_elements, class.source="r-code", class.output="r-output"}
 score_vec[0]
 ```
 
 ベクトル同士はcで結合する。
 
-```{r concat_vectors}
+```{r concat_vectors, class.source="r-code", class.output="r-output"}
 c(c(1, 2, 3), c(4, 5))
 ```
 
@@ -169,32 +187,32 @@ c(c(1, 2, 3), c(4, 5))
 
 Rにスカラー変数はなく、ベクトルはあるので、演算はベクトル同士の演算になる。まず足し算 c(10, 20, 30) + c(4, 5, 6) は、要素ごとの和になる。これは要素が1個のベクトル 10 + 4 = 14 の拡張と考えれば素直だろう。
 
-```{r add_vectors}
+```{r add_vectors, class.source="r-code", class.output="r-output"}
 c(10, 20, 30) + c(4, 5, 6)
 10 + 4
 ```
 
 max()は、ベクトルの要素のうち、もっとも大きい値を返す。max(c(10, 20, 30)) は c(30) 、つまり要素が1個のベクトルである。さっきの足し算がmapなら、maxはreduceと考えると解りやすいだろう。
 
-```{r max_vector}
+```{r max_vector, class.source="r-code", class.output="r-output"}
 max(c(10, 20, 30))
 ```
 
 2つのベクトルの要素ごとのmaxを取りたい、つまりmapしたいなら、pmaxを使う。
 
-```{r pmax_vectors}
+```{r pmax_vectors, class.source="r-code", class.output="r-output"}
 pmax(c(10, 2, 30), c(4, 50, 6))
 ```
 
 NumPyてきなbroadcastingを、Rでも行うことができる。 c(10, 20, 30) + 4 は c(14, 24, 34) になる。左辺のそれぞれに4を足すというふるまいは直観的だろう。実際には右辺ベクトルの要素を、左辺ベクトルの要素数と同じになるまで繰り返している(repeat)。
 
-```{r add_vector_int}
+```{r add_vector_int, class.source="r-code", class.output="r-output"}
 c(10, 20, 30) + 4
 ```
 
 ちなみに同じ値を繰り返したければ、repを使う。
 
-```{r repeat_vector_int}
+```{r repeat_vector_int, class.source="r-code", class.output="r-output"}
 rep(4, 3)
 ```
 
@@ -202,25 +220,25 @@ rep(4, 3)
 
 Pythonでは、()をつけずにassertを書く。
 
-```{python assert_python, result="asis"}
+```{python assert_python, result="asis", class.source="python-code", class.output="python-output"}
 assert 2 ** 4 == 16
 ```
 
-```{python assertion_failed_python, error=TRUE, result="asis"}
+```{python assertion_failed_python, error=TRUE, result="asis", class.source="python-code", class.output="python-output"}
 assert 2 ** 4 != 16
 ```
 
 Rではassertthatを使う。パッケージを使う前にimportするのは、Pythonと同様である。
 
-```{r library_assert_r, message=FALSE, warning=FALSE}
+```{r library_assert_r, message=FALSE, warning=FALSE, class.source="r-code", class.output="r-output"}
 library(assertthat)
 ```
 
-```{r assert_r}
+```{r assert_r, class.source="r-code", class.output="r-output"}
 assertthat::assert_that((2**4) == 16)
 ```
 
-```{r assertion_failed_r, error=TRUE}
+```{r assertion_failed_r, error=TRUE, class.source="r-code", class.output="r-output"}
 assertthat::assert_that((2**4) != 16)
 ```
 
@@ -228,7 +246,7 @@ assertthat::assert_that((2**4) != 16)
 
 要素数はNROW()で調べる。length()もあるが忘れていい。
 
-```{r length_vector_int}
+```{r length_vector_int, class.source="r-code", class.output="r-output"}
 NROW(c(10, 20, 30))
 NROW(4)
 NROW(c())
@@ -236,7 +254,7 @@ NROW(c())
 
 Pythonのrangeてきな連番を作ろう。要素数n個のベクトルvに対して 1, 2, ..., n という連番の整数は、 seq_len(n) で作る。seq_len(NROW(c(10, 20, 30)))は要素が3個なのでc(1, 2, 3)になる。seq_len(NROW(c()))は空ベクトルが返る。
 
-```{r seq_len_vector_int}
+```{r seq_len_vector_int, class.source="r-code", class.output="r-output"}
 seq_len(NROW(c(10, 20, 30)))
 seq_len(NROW(4))
 seq_len(NROW(c()))
@@ -248,7 +266,7 @@ seq_len(NROW(c()))
 
 型が混在する集合はlistに格納する。PythonのlistやOrderedDict、C言語の構造体と似ている。 "" が無い箇所があることに注意する。
 
-```{r list}
+```{r list, class.source="r-code", class.output="r-output"}
 a_lst <- list(name = "foo", score = 80, year = 2019)
 a_lst
 NROW(a_lst)
@@ -257,7 +275,7 @@ names(a_lst)
 
 要素には$名前、[[属性名]]、インデックスでアクセスできる。Pythonのenumerableな感じだ。
 
-```{r list_elements}
+```{r list_elements, class.source="r-code", class.output="r-output"}
 a_lst$score
 a_lst[["score"]]
 a_lst[[2]]
@@ -265,7 +283,7 @@ a_lst[[2]]
 
 一重カッコ [属性名] は、要素ではなくリストを返す。
 
-```{r sublist}
+```{r sublist, class.source="r-code", class.output="r-output"}
 a_lst["score"]
 a_lst[2]
 is.list(a_lst["score"])
@@ -274,7 +292,7 @@ is.list(a_lst[["score"]])
 
 ベクトルと同様に、インデックスを指定して部分リストを得ることができる。属性名を指定してもよい。
 
-```{r sublists}
+```{r sublists, class.source="r-code", class.output="r-output"}
 a_lst[c(1, 2)]
 a_lst[c("name", "score")]
 ```
@@ -283,7 +301,7 @@ a_lst[c("name", "score")]
 
 こちらはリストを長くする。
 
-```{r concat_lists}
+```{r concat_lists, class.source="r-code", class.output="r-output"}
 list_1 <- list("foo")
 list_2 <- list(80)
 list_3 <- list(2019)
@@ -294,7 +312,7 @@ NROW(list_3_elements)
 
 こちらはリストを入れ子にする。
 
-```{r nested_lists}
+```{r nested_lists, class.source="r-code", class.output="r-output"}
 nested_list <- list(first = list_1, second = list_2)
 nested_list
 ```
@@ -303,7 +321,7 @@ nested_list
 
 identicalは、二つのオブジェクトが同値ならTRUE、違っていたらFALSEを返す。identicalといいつつ、同一オブジェクト(雑に言うと同じメモリ番地に置かれている)かどうかではなく、値が同じかどうかを調べる。
 
-```{r vectors_from_to_lists}
+```{r vectors_from_to_lists, class.source="r-code", class.output="r-output"}
 original_vec <- 1:5
 list_from_vec <- as.list(original_vec)
 converted_vec <- unlist(list_from_vec)
@@ -312,17 +330,17 @@ assertthat::assert_that(identical(original_vec, converted_vec))
 
 ### DataFrame (tibble)
 
-```{r import_tidyverse, warning=FALSE}
+```{r import_tidyverse, warning=FALSE, class.source="r-code", class.output="r-output"}
 library(tidyverse)
 ```
 
 PandasのDataFrameと同様に、Rにもdata.frameがある(Rが先だったかもしれないが)。だがtibbleというもっといいものがあるのでそちらを使う。まず説明用の架空データを作る。
 
-```{r create_tibble}
+```{r create_tibble, class.source="r-code", class.output="r-output"}
 df <- tibble(name = c("foo", "bar"), score = c(80, 60), year = c(2019, 2020))
 ```
 
-```{r embed_tibble, eval=TRUE, echo=FALSE}
+```{r embed_tibble, eval=TRUE, echo=FALSE, class.source="r-code", class.output="r-output"}
 df %>%
   kable() %>%
   kable_styling()
@@ -330,13 +348,13 @@ df %>%
 
 print()すると今作った tibble を文字列として表示する。というより実は、変数名だけ入力するとprint()して表示していたのだった。PythonのREPLと同じである。
 
-```{r print_tibble}
+```{r print_tibble, class.source="r-code", class.output="r-output"}
 print(df)
 ```
 
 View()するとExcelっぽいウィンドウに表示する。ここには表示できないので、各自試してほしい。
 
-```{r view_tibble, eval=FALSE, echo=TRUE}
+```{r view_tibble, eval=FALSE, echo=TRUE, class.source="r-code", class.output="r-output"}
 View(df)
 ```
 
@@ -344,7 +362,7 @@ tibbleは、縦に標本を並べ、横に標本の属性を並べる。ざっ�
 
 まず score のベクトルを取得する。Pandasがそうであるように、tibbleは連想配列らしく使える。ベクトルが返るのでPandasのSeriesとは少し異なる。
 
-```{r extract_column_as_vector}
+```{r extract_column_as_vector, class.source="r-code", class.output="r-output"}
 df$score
 df[["score"]]
 df[[2]]
@@ -352,21 +370,21 @@ df[[2]]
 
 scoreだけを切り出したtibbleを取得する。
 
-```{r extract_column_as_tibble}
+```{r extract_column_as_tibble, class.source="r-code", class.output="r-output"}
 df["score"]
 df[2]
 ```
 
 行=標本も指定しよう。この記法はNumPyっぽく、Pandasのようにlocとは書かない。
 
-```{r extract_cell}
+```{r extract_cell, class.source="r-code", class.output="r-output"}
 df[[1, "score"]]
 df[1, "score"]
 ```
 
 行=標本を指定して全属性を取り出すときは、 , の後を空白にする。 : は書かない。
 
-```{r extract_sample}
+```{r extract_sample, class.source="r-code", class.output="r-output"}
 df[1, ]
 ```
 
@@ -379,14 +397,14 @@ tibbleに比べれば覚えることが少ないので、最低限のことだ�
 
 tibbleと異なり、すべての要素を同じ型にする。まずベクトルから行列を作る。byrowで並べ方を指定する。
 
-```{r create_matrices}
+```{r create_matrices, class.source="r-code", class.output="r-output"}
 matrix(data = 1:6, nrow = 2, byrow = FALSE)
 matrix(data = 1:6, nrow = 2, byrow = TRUE)
 ```
 
 要素がすべて型の同じtibbleから行列を作る。
 
-```{r tibble_to_matrix}
+```{r tibble_to_matrix, class.source="r-code", class.output="r-output"}
 df_num <- tibble(p = 1:2, q = 3:4, r = 5:6)
 mat_num <- as.matrix(df_num)
 mat_num
@@ -394,7 +412,7 @@ mat_num
 
 as_tibbleでtibbleに変換する。
 
-```{r matrix_to_tibble}
+```{r matrix_to_tibble, class.source="r-code", class.output="r-output"}
 df_mat_num <- as_tibble(mat_num)
 df_mat_num
 assertthat::assert_that(identical(df_num, df_mat_num))
@@ -408,14 +426,14 @@ Rの関数は、Pythonのラムダ式である。
 
 Pythonでは以下のように、引数の2乗を返す無名関数を定義して、それをmy_squareという変数に格納し、こう呼び出せる。
 
-```{python lambda_python, result="asis"}
+```{python lambda_python, result="asis", class.source="python-code", class.output="python-output"}
 my_square = lambda n: n * n
 my_square(9)
 ```
 
 Rではfunctionと書く。
 
-```{r lambda_r}
+```{r lambda_r, class.source="r-code", class.output="r-output"}
 my_square <- function(n) {
   n * n
 }
@@ -424,13 +442,13 @@ my_square(9)
 
 Pythonと同様に、引数にキーワードをつけてもよい。引数が多いときは、キーワードをつけるとソースコードが読みやすくなるだろう。
 
-```{r keyword_parameters}
+```{r keyword_parameters, class.source="r-code", class.output="r-output"}
 my_square(n = 9)
 ```
 
 Pythonと同様に、引数のキーワードありとなしを混在することもできる。まずキーワードがある引数を当てはめ、残りのパラメータをまだ値が無い先頭のパラメータから順に当てはめる。
 
-```{r named_parameters}
+```{r named_parameters, class.source="r-code", class.output="r-output"}
 my_pow <- function(base, index) {
   base**index
 }
@@ -439,7 +457,7 @@ my_pow(index = 2, 3)
 
 do.callを使って、Pythonのunpack, Rubyのsplatのように、listを引数に展開することもできる。
 
-```{r splat_parameters}
+```{r splat_parameters, class.source="r-code", class.output="r-output"}
 args <- list(base = 3, index = 2)
 do.call(my_pow, args)
 ```
@@ -448,7 +466,7 @@ do.call(my_pow, args)
 
 Rで負の数の対数を取ると、警告を出してNaNを返すが、代わりに-Infを返す関数を作ろう。ifも式なのでこう書ける。
 
-```{r if_expression}
+```{r if_expression, class.source="r-code", class.output="r-output"}
 my_log10 <- function(x) {
   if (x <= 0) {
     -Inf
@@ -466,13 +484,13 @@ my_log10(10)
 
 最初に述べた通り、Rにスカラー変数はないので、この引数xはベクトルである。ならば、ベクトルを受け取ってベクトルを返すmap動作がRらしいだろう。PythonのPythonicに対応する言葉が、R-likeである。上記のコードがどうなるか試してみよう。
 
-```{r naive_my_log}
+```{r naive_my_log, class.source="r-code", class.output="r-output"}
 my_log10(c(-1, 0, 0.1, 10))
 ```
 
 上手くいってないようだ。改善方法は二つある。一つ目の方法は、ifelseを使って、ベクトルの要素ごとにthenとelseを選ぶことだ。ただしこれは、log10(負の値)が警告を出すので、見た目がよろしくない。警告ではなくエラーになる関数では使えないだろう。
 
-```{r if_else_log}
+```{r if_else_log, class.source="r-code", class.output="r-output"}
 my_log10_alt1 <- function(xs) {
   ifelse(xs <= 0, -Inf, log10(xs))
 }
@@ -481,7 +499,7 @@ my_log10_alt1(c(-1, 0, 0.1, 10))
 
 二つ目の方法は、Pythonの list comprehension てきにmapすることだ。このようにmapを使いこなすとよいだろう。
 
-```{r map_else_log}
+```{r map_else_log, class.source="r-code", class.output="r-output"}
 my_log10_alt2 <- function(xs) {
   purrr::map_dbl(xs, function(x) {
     if (x <= 0) {
@@ -496,7 +514,7 @@ my_log10_alt2(c(-1, 0, 0.1, 10))
 
 Rでfor文は使わないので、忘れてよい。Pythonでfor文を使う処理があったら、常にmapとreduceを使うことを検討しよう。mapの例の次に、reduceの使い方として、フィボナッチ数列を示そう。0と負の数についてはエラーになるが、それでいいだろう。
 
-```{r reduce_fib}
+```{r reduce_fib, class.source="r-code", class.output="r-output"}
 my_fib <- function(xs) {
   purrr::map_dbl(xs, function(x) {
     tail(purrr::reduce(.x = seq_len(x), .init = integer(), function(acc, i) {
@@ -516,7 +534,7 @@ my_fib(1:10)
 
 Pythonで外の lexical scope にある変数を変更するには、nonlocalを使う。以下のコードでは、outer()は1を返す。
 
-```{python nonlocal_python, result="asis"}
+```{python nonlocal_python, result="asis", class.source="python-code", class.output="python-output"}
 def outer():
   z = 0
   def inner():
@@ -531,7 +549,7 @@ outer()
 
 Rでは \<\<- を使って、 lexical scope の外にある変数に代入する。
 
-```{r nonlocal_r}
+```{r nonlocal_r, class.source="r-code", class.output="r-output"}
 outer <- function() {
   z <- 0
   inner <- function() {
@@ -553,13 +571,13 @@ PythonもRも、lexical scopeの範囲は、ざっくりいうと関数(defやfu
 
 Rでは文字列の整形をするには、昔ながらのsprintfを使う。
 
-```{r sprintf}
+```{r sprintf, class.source="r-code", class.output="r-output"}
 sprintf("地点=%s, 温度=%.1f", "横浜", 11.8)
 ```
 
 文字列を連結するときは、pasteを使う。sep引数が文字列の区切り文字で、デフォルトは半角空白1個である。英語で英単語を連結して文を作るときはこれでよいが、日本語では困ることがあるだろう。区切り文字を空文字列にするにはsep引数で明示的に指定するか、paste0を使う。Rの文字列は + 演算子で連結できない。
 
-```{r paste}
+```{r paste, class.source="r-code", class.output="r-output"}
 paste("神奈川県", "横浜市", "中区")
 paste("神奈川県", "横浜市", "中区", sep = " ")
 paste0("神奈川県", "横浜市", "中区")
@@ -568,25 +586,25 @@ paste("神奈川県", "横浜市", "中区", sep = ":")
 
 以下のコードは意外にも、要素が3個のベクトルを返す。pasteはベクトルをベクトルにmapする関数である。
 
-```{r paste_map}
+```{r paste_map, class.source="r-code", class.output="r-output"}
 words <- c("神奈川県", "横浜市", "中区")
 paste(words)
 ```
 
 collapseを指定すると、文字列を区切り文字で連結して、単一の文字列を返す。reduceな動作になる。
 
-```{r paste_reduce}
+```{r paste_reduce, class.source="r-code", class.output="r-output"}
 paste(words, sep = "", collapse = ":")
 ```
 
 より高度な文字列処理はstringrパッケージを使う。PythonもRもたくさんの関数があるが、代表的なものとして正規表現で文字列を分解する例を示そう。Python の re は full matching 、R の stringr は partial matching である。
 
-```{python str_match_pythoon, eval=TRUE, result="asis"}
+```{python str_match_pythoon, eval=TRUE, result="asis", class.source="python-code", class.output="python-output"}
 import re
 re.match(r".{2}(\D+)(\d+)", "01Year2021").groups()
 ```
 
-```{r str_match_r}
+```{r str_match_r, class.source="r-code", class.output="r-output"}
 stringr::str_match("01Year2021", "(\\D+)(\\d+)")
 ```
 
@@ -594,13 +612,13 @@ stringr::str_match("01Year2021", "(\\D+)(\\d+)")
 
 既に書いたが、logical, numeric, character の右側への変換は、必要なら暗黙に行われる。paste関数で試そう。書式を指定しなければ、よきに計らった文字列表記になる。
 
-```{r coerce_paste}
+```{r coerce_paste, class.source="r-code", class.output="r-output"}
 paste("Text", exp(1), 2, FALSE)
 ```
 
 リストとベクタの変換で既に示したように、型変換は一般に as.型名 でできる。Rは変数名に . を含めることができ、PythonやC++でインスタンスメソッドの前に . をつけるときのような特別な意味は . にはない。
 
-```{r coerce_numeric}
+```{r coerce_numeric, class.source="r-code", class.output="r-output"}
 as.numeric("-2.7")
 as.integer("-2.7")
 as.character(-2.7)
@@ -608,31 +626,31 @@ as.character(-2.7)
 
 無限大と文字列に書くことができる。Pythonのfloat()と同じである。こちらがPythonで
 
-```{python coerce_inf_python}
+```{python coerce_inf_python, class.source="python-code", class.output="python-output"}
 float("Inf")
 float("-infinity")
 ```
 
 こちらがRである。
 
-```{r coerce_inf_r}
+```{r coerce_inf_r, class.source="r-code", class.output="r-output"}
 as.numeric("Inf")
 as.numeric("-infinity")
 ```
 
 型変換できないときは、警告を出してNAが返る。Pythonと違って、エラーにはならない。
 
-```{python coerce_not_a_number_python, error=TRUE}
+```{python coerce_not_a_number_python, error=TRUE, class.source="python-code", class.output="python-output"}
 float("abc")
 ```
 
-```{r coerce_not_a_number_r}
+```{r coerce_not_a_number_r, class.source="r-code", class.output="r-output"}
 as.numeric("abc")
 ```
 
 NAは後でどうにかするので警告を無視したいなら、 suppressWarnings() を使う。
 
-```{r suppress_warnings}
+```{r suppress_warnings, class.source="r-code", class.output="r-output"}
 suppressWarnings(as.numeric("abc"))
 ```
 
@@ -640,7 +658,7 @@ suppressWarnings(as.numeric("abc"))
 
 Pythonのrangeと同様のことをしたければ、 seq() とか 1:n とかがある。Pythonと異なりRは閉区間であり、区間の開始と終了の両方を要素に含む。また、開始番号が終了番号より小さいと、1ずつ減る数列が得られる。ベクトルのインデックスを得る場合に、これだと空のベクトルのインデックスがc(1, 0)になってまずい。seq_len()を積極的に使おう。
 
-```{r seq_vector}
+```{r seq_vector, class.source="r-code", class.output="r-output"}
 seq(4)
 1:4
 seq(0)
@@ -651,7 +669,7 @@ seq(-2)
 
 さて差が整数ではない等差数列は、丸め誤差が発生するので、予想した長さにならないことがある。以下はPythonのコードである。NumPy.linspaceは数列の長さを指定するので正しい個数になるが、NumPy.arrangeは丸め誤差の影響で個数が合わないことがある。
 
-```{python linspace_python}
+```{python linspace_python, class.source="python-code", class.output="python-output"}
 import numpy as np
 for x in range(50, 53):
   print("{} {}".format(len(np.linspace(0.0, 1.0, x)),
@@ -660,7 +678,7 @@ for x in range(50, 53):
 
 同様のことを、Rではseqの length.out引数と、by引数で区別する。この例ではPythonと違って丸め誤差の影響を受けなかったが、両引数を使い分ける必要がある。
 
-```{r linspace_r}
+```{r linspace_r, class.source="r-code", class.output="r-output"}
 purrr::map_chr(50:52, function(x) {
   sprintf(
     "%d %d", NROW(seq(from = 0.0, to = 1.0, length.out = x)),
@@ -673,7 +691,7 @@ purrr::map_chr(50:52, function(x) {
 
 いかにもわざとらしい例だが、以下の例は invisible があると何も表示しないし、 invisible がなければ最大20000個(通常は1000個で打ち切り)を表示しようとする。
 
-```{r launch_invisible}
+```{r launch_invisible, class.source="r-code", class.output="r-output"}
 invisible(1:20000)
 ```
 
@@ -681,11 +699,11 @@ invisible(1:20000)
 
 日時(date)と時刻(timestamp)を上手く扱うのは難しいので、よくできたパッケージを上手に使いこなす。一年の初めからどれだけの割合(0..1)が経過したか指定すると、その日時を表示する関数を作る。うるう年は考慮するがうるう秒は考慮しない。[1月4日のお昼には、もう2021年の「1%」が経過している](https://twitter.com/kuina_ch/status/1344513191707963392)のは本当だろうか?
 
-```{r library_lubridate, message=FALSE, warning=FALSE}
+```{r library_lubridate, message=FALSE, warning=FALSE, class.source="r-code", class.output="r-output"}
 library(lubridate)
 ```
 
-```{r elapsed_time_in_year, message=FALSE, warning=FALSE}
+```{r elapsed_time_in_year, message=FALSE, warning=FALSE, class.source="r-code", class.output="r-output"}
 elapsed_time_in_year <- function(year, ratio) {
   epoch <- paste0(year, "-01-01 00:00:00")
   x <- lubridate::ymd_hms(epoch, tz = "Asia/Tokyo")
@@ -700,12 +718,12 @@ elapsed_time_in_year(year = 2020, ratio = 0.162)
 
 時間(duration)を説明するついでに関数合成しよう。functional::Composeは二つの関数を合成する。ここでは hh:mm:ss 書式の時間の文字列を受け取って、何秒か返す関数を作る。 function を使っても同じことをできるが、引数を書かなくて済むのですっきりする。
 
-```{r hms_to_seconds}
+```{r hms_to_seconds, class.source="r-code", class.output="r-output"}
 library(functional)
 hms_to_seconds <- functional::Compose(lubridate::hms, lubridate::seconds)
 ```
 
-```{r launch_hms_to_seconds}
+```{r launch_hms_to_seconds, class.source="r-code", class.output="r-output"}
 hms_to_seconds("00:01:04")
 hms_to_seconds("01:00:04")
 ```
@@ -714,7 +732,7 @@ hms_to_seconds("01:00:04")
 
 PythonやC++てきなクラス、つまりクラスにメンバ関数とメンバ変数を定義したデータ構造をRでも作れる。まずPythonでカウンターを作る例を示す。
 
-```{python counter_class_python, result="asis"}
+```{python counter_class_python, result="asis", class.source="python-code", class.output="python-output"}
 class Counter:
     """A classic example of classes"""
     __count = 0
@@ -740,7 +758,7 @@ print(ct.get())
 
 RではR6を使う。ほぼPythonと同様に書ける。publicとprivateと明記するところがC++みたいだ。
 
-```{r counter_class_r6}
+```{r counter_class_r6, class.source="r-code", class.output="r-output"}
 library(R6)
 
 Counter <- R6::R6Class("Counter",
@@ -778,7 +796,7 @@ Rでは、呼び出された関数は引数を変更できるが、その変更�
 
 Pythonで、配列の要素をすべて2倍にするとき、こう書ける。
 
-```{python double_python}
+```{python double_python, class.source="python-code", class.output="python-output"}
 import numpy as np
 
 def doubler(x):
@@ -794,7 +812,7 @@ v
 
 rで同様のコードを書くとどうなるだろうか? 忘れていたfor文を敢えて使って書こう。
 
-```{r double_for_r}
+```{r double_for_r, class.source="r-code", class.output="r-output"}
 doubler <- function(x) {
   for (i in seq_len(NROW(x))) {
     x[i] <- x[i] * 2
@@ -812,7 +830,7 @@ doublerの中では二倍になったようだが(和が20なので)、呼び出
 
 Rでは引数を上書きすることは諦めて、値を返す関数を素直にmapで書こう。"~ .x * 2" は無名関数の略記法である。今は深入りしないが、いずれ役に立つことがあるだろう。
 
-```{r double_map_r}
+```{r double_map_r, class.source="r-code", class.output="r-output"}
 doubler <- function(x) {
   purrr::map_dbl(x, ~ .x * 2)
 }
@@ -822,7 +840,7 @@ doubler(rep(1, 10))
 
 クラスのインスタンス(R6オブジェクト)は参照渡しである。呼び出された関数が引数に変更を加えると、引数を渡した呼び出し側にも変更が反映される。
 
-```{r call_by_reference_r6}
+```{r call_by_reference_r6, class.source="r-code", class.output="r-output"}
 increment_in_callee <- function(obj) {
   obj$increment()
   print(obj$get())
@@ -835,7 +853,7 @@ print(ct_caller$get())
 
 Pythonも参照渡しなので、参照渡しの方がなじみがあるだろう。
 
-```{python call_by_reference_python, result="asis"}
+```{python call_by_reference_python, result="asis", class.source="python-code", class.output="python-output"}
 def increment_in_callee(obj):
     obj.increment()
     print(obj.get())
@@ -849,7 +867,7 @@ print(ct_caller.get())
 
 Pythonで関数呼び出しに失敗した場合にデフォルト値を得ようとしたら、try-except構文を使うだろう。Rでは purrr::possibly を使って、デフォルト値を返す関数を作る。 stop はエラーを発生させる関数である。
 
-```{r possibly, error=TRUE}
+```{r possibly, error=TRUE, class.source="r-code", class.output="r-output"}
 suspicious_func <- function(x) {
   stop("Unsupported")
 }
@@ -860,7 +878,7 @@ safe_func(1)
 
 変数が存在するかどうかは、Pythonでは、locals() と globals() を調べると分かる。
 
-```{python check_vars_python, result="asis"}
+```{python check_vars_python, result="asis", class.source="python-code", class.output="python-output"}
 a_glogal_var = 1
 def check_vars_exists():
   a_local_var = 2
@@ -873,7 +891,7 @@ check_vars_exists()
 
 Rでは exists で分かる。
 
-```{r check_vars_r}
+```{r check_vars_r, class.source="r-code", class.output="r-output"}
 a_glogal_var <- 1
 check_vars_exists <- function() {
   a_local_var <- 2
@@ -887,7 +905,7 @@ check_vars_exists()
 
 Pythonと同様にデフォルト引数を書くこともできる。だがデフォルト引数がいつ評価されるかは、PythonでもRでも厄介な問題を生むので、個人的にはお勧めしない。以下はPythonでありがちなバグである。
 
-```{python default_python, result="asis"}
+```{python default_python, result="asis", class.source="python-code", class.output="python-output"}
 def add(x=[]):
   x.append(1)
   return x
@@ -899,7 +917,7 @@ add()
 
 それはさておき、Rのデフォルト引数も、見た目はPythonと同様である。
 
-```{r default_r}
+```{r default_r, class.source="r-code", class.output="r-output"}
 real_to_complex <- function(real, imaginary = 0.0) {
   list(r = real, im = imaginary)
 }
@@ -910,7 +928,7 @@ real_to_complex(real = 1, imaginary = 2)
 
 引数が無いことは missing で分かる。NULLを指定することと、引数が無いことは異なる。この例ならデフォルト引数を使っても大差ないが、引数が無いことが分かるとできることがあるかもしれない。
 
-```{r missing_r}
+```{r missing_r, class.source="r-code", class.output="r-output"}
 real_to_complex_alt <- function(real, imaginary) {
   im_part <- if (missing(imaginary)) {
     0
@@ -927,12 +945,12 @@ real_to_complex_alt(real = 1, imaginary = NULL)
 
 関数のデフォルト引数の値を調べるために、Pythonでは inspect.signature を使う。Rではformalsを使う。以下は正規表現で文字列を分割する関数のデフォルト引数である。
 
-```{python inspect_python, result="asis"}
+```{python inspect_python, result="asis", class.source="python-code", class.output="python-output"}
 import inspect
 inspect.signature(re.split)
 ```
 
-```{r inspect_r}
+```{r inspect_r, class.source="r-code", class.output="r-output"}
 formals(stringr::str_split)
 ```
 
@@ -940,12 +958,12 @@ formals(stringr::str_split)
 
 コマンドライン引数は、commandArgs()で文字列ベクトルとして取得する。 trailingOnly=FALSE にするとすべての引数、 trailingOnly=TRUE にすると --args および以降の引数(--argsがなければ空文字列ベクトル)を取得する。R処理系に渡す引数を無視して、Rスクリプトだけに渡す引数を取得するために、 trailingOnly=TRUE を使うとよい。
 
-```{r command_args, eval=FALSE, echo=TRUE}
+```{r command_args, eval=FALSE, echo=TRUE, class.source="r-code", class.output="r-output"}
 commandArgs(trailingOnly = FALSE)
 commandArgs(trailingOnly = TRUE)
 ```
 
-```{r launch_command_args, eval=TRUE, echo=FALSE}
+```{r launch_command_args, eval=TRUE, echo=FALSE, class.source="r-code", class.output="r-output"}
 commandArgs(trailingOnly = FALSE) %>% purrr::discard(~ stringr::str_detect(.x, "\\.Rmd"))
 commandArgs(trailingOnly = TRUE)
 ```
@@ -954,13 +972,13 @@ commandArgs(trailingOnly = TRUE)
 
 RStudioでスクリプトを実行したときは、コマンドライン引数としてオプションを渡すことができない。対策としては、グローバル変数(仮に g_args と名付ける)があったらコマンドライン引数の代わりに扱い、そうでなければ実際のコマンドライン引数 commandArgs() を読む、とすればよい。変数があるかどうかは、先ほどの exists() を使う。
 
-```{r delete_command_args, eval=TRUE, echo=FALSE}
+```{r delete_command_args, eval=TRUE, echo=FALSE, class.source="r-code", class.output="r-output"}
 if (exists("g_args")) {
   rm(g_args)
 }
 ```
 
-```{r select_command_args}
+```{r select_command_args, class.source="r-code", class.output="r-output"}
 get_commandline_args <- function() {
   if (exists("g_args")) {
     g_args
@@ -989,7 +1007,7 @@ Rの基本が分かったので、CSVファイルをRで読み込んで描画し
 
 CSVファイルを読んで集計した結果を出力するディレクトリを作る。既にディレクトリがあるならそのままにする。
 
-```{r mkdir}
+```{r mkdir, class.source="r-code", class.output="r-output"}
 out_dirname <- "output"
 dir.create(out_dirname, showWarnings = FALSE)
 assertthat::assert_that(dir.exists(out_dirname))
@@ -999,12 +1017,12 @@ assertthat::assert_that(dir.exists(out_dirname))
 
 readr::read_csv を使う。
 
-```{r read_csv}
+```{r read_csv, class.source="r-code", class.output="r-output"}
 library(tidyverse)
 df_timeseries <- readr::read_csv("incoming_yokohama/jinkosetai-sui.csv")
 ```
 
-```{r table_timeseries, echo=FALSE}
+```{r table_timeseries, echo=FALSE, class.source="r-code", class.output="r-output"}
 df_timeseries %>%
   head() %>%
   kable() %>%
@@ -1013,13 +1031,13 @@ df_timeseries %>%
 
 さてprintで表示すると、列名に `` がついているのが分かる。
 
-```{r print_timeseries}
+```{r print_timeseries, class.source="r-code", class.output="r-output"}
 print(df_timeseries)
 ```
 
 これは列名に ( を含むので、$の後に列名を書けないということである。
 
-```{r print_timeseries_column_error, eval=FALSE, error=TRUE, results="asis"}
+```{r print_timeseries_column_error, eval=FALSE, error=TRUE, results="asis", class.source="r-code", class.output="r-output"}
 df_timeseries$年（和暦）
 ```
 
@@ -1027,17 +1045,17 @@ df_timeseries$年（和暦）
 
 一つ目は、列名を ` (backtick)で囲むことである。
 
-```{r print_timeseries_column_correct}
+```{r print_timeseries_column_correct, class.source="r-code", class.output="r-output"}
 df_timeseries$`年（和暦）`
 ```
 
 二つ目は、列名を colnames で付け替えることである。もちろん入力するデータを確認して、どんな形式か分かった上で、それぞれの列に対応する名前をつける。
 
-```{r rename_timeseries_column_correct}
+```{r rename_timeseries_column_correct, class.source="r-code", class.output="r-output"}
 colnames(df_timeseries) <- c("JPyear", "Year", "Household", "Population")
 ```
 
-```{r renamed_table_timeseries, echo=FALSE}
+```{r renamed_table_timeseries, echo=FALSE, class.source="r-code", class.output="r-output"}
 df_timeseries %>%
   head() %>%
   kable() %>%
@@ -1048,7 +1066,7 @@ df_timeseries %>%
 
 まず単純なグラフを描こう。横軸を年(西暦)、縦軸を人口の折れ線グラフを描く。たった3行で済む。
 
-```{r draw_table_timeseries}
+```{r draw_table_timeseries, class.source="r-code", class.output="r-output"}
 g <- ggplot(df_timeseries)
 g <- g + geom_line(aes(x = Year, y = Population))
 plot(g)
@@ -1063,7 +1081,7 @@ plot(g)
 - 高さを幅の0.6倍にする
 - フォントを Segoe UI にして、フォントのサイズを指定する
 
-```{r make_breaks}
+```{r make_breaks, class.source="r-code", class.output="r-output"}
 year_unit <- 10
 x_min <- ceiling(min(df_timeseries$Year) / year_unit) * year_unit
 x_max <- floor(max(df_timeseries$Year) / year_unit) * year_unit
@@ -1079,7 +1097,7 @@ x_breaks <- setdiff(
 )
 ```
 
-```{r draw_fancy_table_timeseries, message=FALSE}
+```{r draw_fancy_table_timeseries, message=FALSE, class.source="r-code", class.output="r-output"}
 library(extrafont)
 font_name <- "Segoe UI"
 g <- ggplot(df_timeseries)
@@ -1099,7 +1117,7 @@ plot(g)
 
 tibbleの列名は英語にしても、図の表示は日本語にしたいということがあるだろう。 Migu 1M フォントで表示する。
 
-```{r draw_jp_table_timeseries}
+```{r draw_jp_table_timeseries, class.source="r-code", class.output="r-output"}
 font_name <- "Segoe UI"
 font_name_jp <- "Migu 1M"
 g <- ggplot(df_timeseries)
@@ -1121,21 +1139,21 @@ plot(g)
 
 plotly::ggplotlyを使うと、インタラクティブに拡大縮小したり、線にカーソルを置いて各年の人口を表示できたりする。ただし、出力されるHTMLファイルが数Mbytes増えるのと、PDF化できなくなる。コメントアウトを外して試してほしい。
 
-```{r plotly_jp_table_timeseries, message=FALSE, warning=FALSE}
+```{r plotly_jp_table_timeseries, message=FALSE, warning=FALSE, class.source="r-code", class.output="r-output"}
 library(plotly)
 ## plotly::ggplotly(g)
 ```
 
 図をPNGファイルに保存するには、 ggsaveを使う。 file.path はディレクトリ名 `out_dirname` と ファイル名を結合する。 / で結合するよりも正しい作法である。
 
-```{r ggsave_png, message=FALSE}
+```{r ggsave_png, message=FALSE, class.source="r-code", class.output="r-output"}
 png_filename <- file.path(out_dirname, "yokohama_population.png")
 ggsave(png_filename, plot = g, dpi = 160)
 ```
 
 png() と dev.off() で囲んでもよいが、その場合は高さと幅のピクセル数を固定する必要がある。縦横比を変えたくないときはうれしくないだろう。
 
-```{r save_png, message=FALSE}
+```{r save_png, message=FALSE, class.source="r-code", class.output="r-output"}
 png(filename = png_filename, width = 800, height = 600)
 g <- ggplot(df_timeseries)
 g <- g + geom_line(aes(x = Year, y = Population))
@@ -1147,7 +1165,7 @@ dev.off()
 
 Pandasてきに、CSVファイルを加工する方法を説明する。横浜市各区の人口を読み込む。その後、列名を英語にする。
 
-```{r read_wards}
+```{r read_wards, class.source="r-code", class.output="r-output"}
 df_population_data <- readr::read_csv("incoming_yokohama/e1yokohama2009.csv")
 print(colnames(df_population_data))
 colnames(df_population_data) <- c(
@@ -1158,7 +1176,7 @@ colnames(df_population_data) <- c(
 )
 ```
 
-```{r print_wards, eval=FALSE, echo=FALSE}
+```{r print_wards, eval=FALSE, echo=FALSE, class.source="r-code", class.output="r-output"}
 ## 表示すると、列が長すぎて画面からはみ出しているかもしれない。それと先頭行は区ではなく、横浜市の合計である。
 df_population_data %>%
   kable() %>%
@@ -1167,12 +1185,12 @@ df_population_data %>%
 
 今後使いそうな列だけ残して、後は削除する。列を選ぶには dplyr::select を使う。 %>% は、コマンドラインのパイプと同様、前段で処理したデータを後段に流す。この書き方に慣れるとRが好きになるだろう。実際には前段の返り値を後段の第一引数にしており、Pandasのメソッドチェーン(method chaining)と同じである。
 
-```{r select_wards}
+```{r select_wards, class.source="r-code", class.output="r-output"}
 df_population <- df_population_data %>%
   dplyr::select(c("ward", "area", "household", "population", "per_household", "density"))
 ```
 
-```{r print_selected_wards, echo=FALSE}
+```{r print_selected_wards, echo=FALSE, class.source="r-code", class.output="r-output"}
 df_population %>%
   kable() %>%
   kable_styling()
@@ -1180,7 +1198,7 @@ df_population %>%
 
 横浜市の合計と各区を分離しよう。 dplyr::filter を使って、～区とそれ以外を抜き出す。str_endは文字列がある文字列で終わっているかどうかをTRUEまたはFALSEで返す。Pythonの endswith と同じである。
 
-```{r separate_wards}
+```{r separate_wards, class.source="r-code", class.output="r-output"}
 df_wards <- df_population %>%
   dplyr::filter(stringr::str_ends(ward, "区"))
 
@@ -1190,11 +1208,11 @@ df_all_city <- df_population %>%
 
 もしくはこう書ける。
 
-```{r separate_wards_alt, eval=FALSE}
+```{r separate_wards_alt, eval=FALSE, class.source="r-code", class.output="r-output"}
 df_population %>% dplyr::filter(ward != "横浜市")
 ```
 
-```{r print_all_city, echo=FALSE}
+```{r print_all_city, echo=FALSE, class.source="r-code", class.output="r-output"}
 df_all_city %>%
   kable() %>%
   kable_styling()
@@ -1202,11 +1220,11 @@ df_all_city %>%
 
 dplyr::select は列名を文字列で指定したが、dplyr::filter の ward は "" が無いので文字列ではない。これは先ほど説明したシンボル(symbol)である。今回のように各区はwardという列にある、と分かっているときはこのようにハードコーディングしてよいが、実行時に文字列で与えたいことがあるだろう。そのときは !!rlang::sym を使う。
 
-```{r import_rlang, message=FALSE, warning=FALSE}
+```{r import_rlang, message=FALSE, warning=FALSE, class.source="r-code", class.output="r-output"}
 library(rlang)
 ```
 
-```{r separate_wards_again}
+```{r separate_wards_again, class.source="r-code", class.output="r-output"}
 ward_column_name <- "ward"
 df_wards_alt <- df_population %>%
   dplyr::filter(!!rlang::sym(ward_column_name) != "横浜市")
@@ -1215,14 +1233,14 @@ assertthat::assert_that(identical(df_wards, df_wards_alt))
 
 rlang::expr を使って、 !!rlang::sym がどう展開されたかを確認すると、先ほどのコードと同じことが分かる。
 
-```{r separate_wards_expanded}
+```{r separate_wards_expanded, class.source="r-code", class.output="r-output"}
 rlang::expr(df_population %>%
   dplyr::filter(!!rlang::sym(ward_column_name) != "横浜市"))
 ```
 
 実は dplyr 1.0.0 から across を使えるので、ここで rlang::sym を使う必要はない。後で rlang::sym を使う場面があるので、敢えてここで使った。
 
-```{r separate_wards_again_across}
+```{r separate_wards_again_across, class.source="r-code", class.output="r-output"}
 df_wards_alt_across <- df_population %>%
   dplyr::filter(across(all_of(ward_column_name)) != "横浜市")
 assertthat::assert_that(identical(df_wards_alt, df_wards_alt_across))
@@ -1230,7 +1248,7 @@ assertthat::assert_that(identical(df_wards_alt, df_wards_alt_across))
 
 実は　dplyr::select は、文字列だけでなくシンボルを受け付ける。なので "" が無くてもよかった。わざとらしい例だが、複数の文字列をシンボルにするには、 rlang::syms を使う。それと、!!ではなく!!!を使う。!!と!!!は否定の否定、否定の否定の否定、ではなく演算子というのが珍しい。
 
-```{r select_wards_again}
+```{r select_wards_again, class.source="r-code", class.output="r-output"}
 column_names <- c("ward", "area", "household", "population", "per_household", "density")
 df_population_alt <- df_population_data %>%
   dplyr::select(!!!rlang::syms(column_names))
@@ -1241,14 +1259,14 @@ assertthat::assert_that(identical(df_population, df_population_alt))
 
 df_wards には、 1世帯当たり人員[人] (per_household 列)と 人口密度[人/平方キロメートル] (density 列)がある。これらは、人口(population 列)、世帯数(household 列) 、面積(area 列)から計算できる。 dplyr::mutate で実際に計算して列を作ろう。
 
-```{r mutate_wards}
+```{r mutate_wards, class.source="r-code", class.output="r-output"}
 df_wards_calc <- df_wards %>%
   dplyr::mutate(per_household_calc = population / household, density_calc = population / area)
 ```
 
 元データの per_household と計算で求めた per_household_calc 、元データの density と計算で求めた density_calc が等しいか確認しよう。浮動小数ベクトルが丸め誤差を除いて大体同じかどうかは、 assertthat::are_equal で許容誤差 tol を与えて比べる。
 
-```{r are_equal_calc}
+```{r are_equal_calc, class.source="r-code", class.output="r-output"}
 assertthat::are_equal(
   x = df_wards_calc$per_household,
   y = df_wards_calc$per_household_calc, tol = 0.01
@@ -1263,7 +1281,7 @@ assertthat::are_equal(
 
 assertで条件を満たさないときに実行を停止するのではなく単に同じかどうか知りたければ、dplyr::near で許容誤差 tol を与えて比べる。dplyr::near は二つの要素を先頭から順に比較して、大体同じ=TRUE、違う=FALSEというベクトルを返す。全部TRUEかどうかはallで分かる。
 
-```{r near_calc}
+```{r near_calc, class.source="r-code", class.output="r-output"}
 are_near_values <- dplyr::near(
   x = df_wards_calc$per_household,
   y = df_wards_calc$per_household_calc, tol = 0.01
@@ -1274,7 +1292,7 @@ all(are_near_values)
 
 ちなみに dplyr::mutate の代入先もシンボルであり、実行時に文字列を与えるときは rlang::sym を使う。このときは = ではなく := を使う。代入元がシンボルの場合も同様である。
 
-```{r mutate_wards_sym}
+```{r mutate_wards_sym, class.source="r-code", class.output="r-output"}
 dst_column_name <- "per_household_calc"
 df_wards_calc_dst <- df_wards %>%
   dplyr::mutate(!!rlang::sym(dst_column_name) := population / household)
@@ -1292,18 +1310,18 @@ assertthat::are_equal(df_wards_calc$per_household_calc, df_wards_calc_src$per_ho
 
 全区の世帯数と人口を足して、横浜市全体 df_all_city と同じかどうか確かめる。 dplyr::summarize_at と sum を使って、列の全要素を足す。
 
-```{r sum_wards}
+```{r sum_wards, class.source="r-code", class.output="r-output"}
 df_wards_sum <- df_wards_calc %>%
   dplyr::summarize_at(c("household", "population"), sum)
 ```
 
-```{r print_sum_wards, echo=FALSE}
+```{r print_sum_wards, echo=FALSE, class.source="r-code", class.output="r-output"}
 df_wards_sum %>%
   kable() %>%
   kable_styling()
 ```
 
-```{r verify_sum}
+```{r verify_sum, class.source="r-code", class.output="r-output"}
 assertthat::assert_that(df_all_city$household == df_wards_sum$household)
 assertthat::assert_that(df_all_city$population == df_wards_sum$population)
 ```
@@ -1312,7 +1330,7 @@ assertthat::assert_that(df_all_city$population == df_wards_sum$population)
 
 ここでは世帯数と人口を足したが、それは区の名前、1世帯当たり人員、人口密度を足しても意味が無いからである。そして面積は足していなかった。列名を挙げるのがめんどくさければ、列が数字だったら足す、という操作をしたい。そういうときは、 dplyr::summarize と across を使う。1世帯当たり人員と人口密度を除いてから、数値つまり区の名前以外の列を where(is.numeric) で選んで足す。
 
-```{r sum_wards_all}
+```{r sum_wards_all, class.source="r-code", class.output="r-output"}
 df_wards_sum_all <- df_wards %>%
   dplyr::select(-c("per_household", "density")) %>%
   dplyr::summarize(across(where(is.numeric), sum))
@@ -1320,7 +1338,7 @@ df_wards_sum_all <- df_wards %>%
 
 面積もあっているようだ。
 
-```{r verify_sum_all}
+```{r verify_sum_all, class.source="r-code", class.output="r-output"}
 assertthat::are_equal(x = df_all_city$area, y = df_wards_sum_all$area, tol = 1.0)
 ```
 
@@ -1328,7 +1346,7 @@ assertthat::are_equal(x = df_all_city$area, y = df_wards_sum_all$area, tol = 1.0
 
 グループ化の例として、横浜市各区を [税務署の管轄地域](https://www.nta.go.jp/about/organization/tokyo/location/kanagawa.htm)でまとめよう。まず税務署と区の対応表を作る。
 
-```{r tax_offices}
+```{r tax_offices, class.source="r-code", class.output="r-output"}
 tax_offices <- c(
   "神奈川", "神奈川", "鶴見", "戸塚", "戸塚", "戸塚", "保土ケ谷",
   "保土ケ谷", "保土ケ谷", "緑", "緑", "緑", "横浜中", "横浜中",
@@ -1344,13 +1362,13 @@ df_tax_offices <- tibble(tax_office = tax_offices, ward = ward_names)
 
 区の名前で結合する。Rには連想配列がないが、tibbleで連想配列てきなテーブルを作ればよい。連想配列の要素を個々に引くより、 inner join や left join する方が手軽である。
 
-```{r join_tax_offices}
+```{r join_tax_offices, class.source="r-code", class.output="r-output"}
 df_ward_tax_offices <- dplyr::inner_join(df_tax_offices, df_wards, by = "ward")
 ```
 
 税務署ごとに世帯数と人口をまとめよう。dplyr::group_by を使って、行をグループ化できる。それぞれのグループについて、列ごとにすべての行を足す。
 
-```{r group_tax_offices}
+```{r group_tax_offices, class.source="r-code", class.output="r-output"}
 df_group_population <- df_ward_tax_offices %>%
   dplyr::select(c("household", "population", "tax_office")) %>%
   dplyr::group_by(tax_office) %>%
@@ -1358,7 +1376,7 @@ df_group_population <- df_ward_tax_offices %>%
   dplyr::ungroup()
 ```
 
-```{r print_group_tax_offices, echo=FALSE}
+```{r print_group_tax_offices, echo=FALSE, class.source="r-code", class.output="r-output"}
 df_group_population %>%
   kable() %>%
   kable_styling()
@@ -1370,14 +1388,14 @@ df_group_population %>%
 
 グループに用いた税務署名は文字列である。これをカテゴリ値にすることができる。Rではカテゴリをfactorと呼ぶ。 as.factor で文字列をカテゴリに変換する。
 
-```{r factor_tax_offices}
+```{r factor_tax_offices, class.source="r-code", class.output="r-output"}
 df_factor <- df_ward_tax_offices %>%
   dplyr::mutate(tax_office = as.factor(tax_office))
 ```
 
 カテゴリを表示すると、見た目は文字列のままだが、実際は文字列に対応する整数を振ったものだと分かる。
 
-```{r print_facotr_tax_offices}
+```{r print_facotr_tax_offices, class.source="r-code", class.output="r-output"}
 df_factor$tax_office
 as.integer(df_factor$tax_office)
 ```
@@ -1386,7 +1404,7 @@ as.integer(df_factor$tax_office)
 
 カテゴリの順番を五十音順にしよう。つまり、神奈川(かながわ)、鶴見(つるみ)、戸塚(とつか)、保土ケ谷(ほどがや)、緑(みどり)、横浜中(よこやまなか)、横浜南(よこはまみなみ)の順にする。
 
-```{r relevel_tax_offices}
+```{r relevel_tax_offices, class.source="r-code", class.output="r-output"}
 df_factor <- df_ward_tax_offices %>%
   dplyr::mutate(tax_office = as.factor(tax_office)) %>%
   dplyr::mutate(tax_office = forcats::fct_relevel(
@@ -1399,7 +1417,7 @@ as.integer(df_factor$tax_office)
 
 先ほどとは整数の割り当てが異なる。図にしたとき、凡例が五十音順になることを確かめよう。
 
-```{r draw_relevel_tax_offices}
+```{r draw_relevel_tax_offices, class.source="r-code", class.output="r-output"}
 library(RColorBrewer)
 font_name <- "Segoe UI"
 font_name_jp <- "Migu 1M"
@@ -1430,7 +1448,7 @@ plot(g)
 
 facet_wrap(~ tax_office, nrow=2) と一行追加するだけで、カテゴリ別の表を作る。ggplot2すごい。
 
-```{r facet_wrap_relevel_tax_offices}
+```{r facet_wrap_relevel_tax_offices, class.source="r-code", class.output="r-output"}
 g <- ggplot(df_factor)
 g <- g + geom_point(aes(x = per_household, y = density, color = tax_office), size = 4, shape = 4)
 g <- g + geom_text(aes(x = per_household, y = density, label = ward),
@@ -1459,7 +1477,7 @@ plot(g)
 
 readr::write_excel_csv を使って、BOMつきUTF-8でCSVファイルを書く。こうしておくとExcelで読める(BOMがないとExcelで読めない)。Pandasと同様、gzip形式で読み書きできる。
 
-```{r write_group_tax_offices}
+```{r write_group_tax_offices, class.source="r-code", class.output="r-output"}
 readr::write_excel_csv(df_ward_tax_offices,
   file.path(out_dirname, "yokohama_tax_office.csv")
 )
@@ -1472,15 +1490,15 @@ readr::write_excel_csv(df_ward_tax_offices,
 
 CSVファイルには、それがどんなデータかというメタデータを記述しづらい。メタデータをJSONファイルに書くとよいだろう。例えば横浜市と茅ヶ崎市について、このように書く。city:漢字名、kana:かな表記、roman:ローマ字表記、designated:政令指定都市かどうか、n_wards:政令指定都市なら区の数、tax_offices:所管税務署、date:最終更新日、とする。
 
-```{r print_yokohama_json, echo=FALSE, comment=""}
+```{r print_yokohama_json, echo=FALSE, comment="", class.source="r-code", class.output="r-output"}
 cat(xfun::read_utf8("incoming_metadata/yokohama.json"), sep = "\n")
 ```
 
-```{r print_chigasaki_json, echo=FALSE, comment=""}
+```{r print_chigasaki_json, echo=FALSE, comment="", class.source="r-code", class.output="r-output"}
 cat(xfun::read_utf8("incoming_metadata/chigasaki.json"), sep = "\n")
 ```
 
-```{r read_jsons, message=FALSE, warning=FALSE}
+```{r read_jsons, message=FALSE, warning=FALSE, class.source="r-code", class.output="r-output"}
 library(jsonlite)
 data_yokohama <- jsonlite::fromJSON("incoming_metadata/yokohama.json")
 print(data_yokohama)
@@ -1490,13 +1508,13 @@ print(data_chigasaki)
 
 class()で変数の型が分かる。
 
-```{r class_jsons, message=FALSE, warning=FALSE}
+```{r class_jsons, message=FALSE, warning=FALSE, class.source="r-code", class.output="r-output"}
 class(data_chigasaki)
 ```
 
 JSONファイルをリストとして読み込んだことが分かる。Rにはスカラー変数が無いので、要素(リスト構造の末端)はすべてベクトルである。論理型、数値、文字列型が上手く推測されたことが分かる。日付は必要なら変換しよう。
 
-```{r json_date}
+```{r json_date, class.source="r-code", class.output="r-output"}
 data_yokohama$date <- lubridate::ymd(data_yokohama$date)
 data_yokohama$date
 class(data_yokohama$date)
@@ -1504,21 +1522,21 @@ class(data_yokohama$date)
 
 存在しない要素を取得するとNULLが返る。エラーにはならない。茅ヶ崎市は政令指定都市ではないので、区の数はNULLである。
 
-```{r json_elements}
+```{r json_elements, class.source="r-code", class.output="r-output"}
 data_yokohama$n_wards
 data_chigasaki$n_wards
 ```
 
 JSONファイルを書き出してみる。
 
-```{r write_jsons}
+```{r write_jsons, class.source="r-code", class.output="r-output"}
 out_json_filename <- file.path(out_dirname, "output_yokohama.json")
 jsonlite::write_json(data_yokohama, path = out_json_filename, pretty = TRUE)
 ```
 
 出力結果はこうなる。要素が1個でも配列になるのが、いかにもRらしい。
 
-```{r print_out_json, echo=FALSE, comment=""}
+```{r print_out_json, echo=FALSE, comment="", class.source="r-code", class.output="r-output"}
 cat(xfun::read_utf8(out_json_filename), sep = "\n")
 ```
 
@@ -1548,7 +1566,7 @@ lintr よくある指摘は以下の通りである。
 
 cloc パッケージで、ファイルの論理行、コメント行、空行を数えることができる。Rだけでなくさまざまなプログラミング言語に対応している。Perlが必要なので、Windows の場合は perl (Cygwin可)にPATHを通しておく。ファイル名だけでなくURLを指定することもできる。[R pasteNumbers Addin](https://github.com/zettsu-t/pasteNumbers)にあるファイルの行数を測ろう。
 
-```{r cloc, eval=FALSE, echo=TRUE}
+```{r cloc, eval=FALSE, echo=TRUE, class.source="r-code", class.output="r-output"}
 library(cloc)
 cloc::cloc(source = "pasteNumbers.R")
 ```
@@ -1601,11 +1619,11 @@ cloc::cloc(source = "pasteNumbers.R")
 
 ### 実行環境
 
-```{r version_r}
+```{r version_r, class.source="r-code", class.output="r-output"}
 sessionInfo()
 ```
 
-```{python version_python}
+```{python version_python, class.source="python-code", class.output="python-output"}
 import sys
 sys.version
 ```
