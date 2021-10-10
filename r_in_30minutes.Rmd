@@ -896,8 +896,8 @@ a_glogal_var <- 1
 check_vars_exists <- function() {
   a_local_var <- 2
   assertthat::assert_that(exists("a_glogal_var")) &
-    assertthat::assert_that(exists("a_local_var")) &
-    assertthat::assert_that(!exists("missing_var"))
+  assertthat::assert_that(exists("a_local_var")) &
+  assertthat::assert_that(!exists("missing_var"))
 }
 
 check_vars_exists()
@@ -952,6 +952,32 @@ inspect.signature(re.split)
 
 ```{r inspect_r, class.source="r-code", class.output="r-output"}
 formals(stringr::str_split)
+```
+
+### Assertionで実行を止める
+
+Runtime assertion で条件を満たさないときに、処理を止めることができる。浮動小数が丸め誤差を除いて大体同じかどうかを、 assertthat::are_equal で許容誤差 tol を与えて比べる。
+
+```{r are_equal_with_tol, class.source="r-code", class.output="r-output"}
+assertthat::are_equal(x = 6.0, y = 6.1, tol = 0.5)
+```
+
+assertthat::are_equal は二つの数が大体同じかどうかを返すが、同じという条件を満たさなくても処理は止まらない。単にFALSEを返すだけである。
+
+```{r check_if_equal_with_tol, class.source="r-code", class.output="r-output"}
+check_if_equal <- function(value1, value2) {
+  assertthat::are_equal(x = value1, y = value2, tol = 0.5)
+}
+check_if_equal(value1 = -5, value2 = 6)
+```
+
+条件を満たさないときに処理を止めたければ、 assertthat::assert_that を併用する。
+
+```{r stop_if_not_equal_with_tol, error = TRUE, class.source="r-code", class.output="r-output"}
+stop_if_not_equal <- function(value1, value2) {
+  assertthat::assert_that(assertthat::are_equal(x = value1, y = value2, tol = 0.5))
+}
+stop_if_not_equal(value1 = -5, value2 = 6)
 ```
 
 ### コマンドライン引数を解析する
@@ -1267,14 +1293,14 @@ df_wards_calc <- df_wards %>%
 元データの per_household と計算で求めた per_household_calc 、元データの density と計算で求めた density_calc が等しいか確認しよう。浮動小数ベクトルが丸め誤差を除いて大体同じかどうかは、 assertthat::are_equal で許容誤差 tol を与えて比べる。
 
 ```{r are_equal_calc, class.source="r-code", class.output="r-output"}
-assertthat::are_equal(
+assertthat::assert_that(assertthat::are_equal(
   x = df_wards_calc$per_household,
   y = df_wards_calc$per_household_calc, tol = 0.01
-)
-assertthat::are_equal(
+))
+assertthat::assert_that(assertthat::are_equal(
   x = df_wards_calc$density,
   y = df_wards_calc$density_calc, tol = 1.0
-)
+))
 ```
 
 計算した1世帯当たり人員と人口密度があっていたようだ。
@@ -1296,14 +1322,20 @@ all(are_near_values)
 dst_column_name <- "per_household_calc"
 df_wards_calc_dst <- df_wards %>%
   dplyr::mutate(!!rlang::sym(dst_column_name) := population / household)
-assertthat::are_equal(df_wards_calc$per_household_calc, df_wards_calc_dst$per_household_calc)
+
+assertthat::assert_that(
+  assertthat::are_equal(df_wards_calc$per_household_calc, df_wards_calc_dst$per_household_calc)
+)
 
 src1_column_name <- "population"
 src2_column_name <- "household"
 df_wards_calc_src <- df_wards %>%
   dplyr::mutate(per_household_calc :=
     !!rlang::sym(src1_column_name) / !!rlang::sym(src2_column_name))
-assertthat::are_equal(df_wards_calc$per_household_calc, df_wards_calc_src$per_household_calc)
+
+assertthat::assert_that(
+  assertthat::are_equal(df_wards_calc$per_household_calc, df_wards_calc_src$per_household_calc)
+)
 ```
 
 ### それぞれの列を集計する
@@ -1339,7 +1371,7 @@ df_wards_sum_all <- df_wards %>%
 面積もあっているようだ。
 
 ```{r verify_sum_all, class.source="r-code", class.output="r-output"}
-assertthat::are_equal(x = df_all_city$area, y = df_wards_sum_all$area, tol = 1.0)
+assertthat::assert_that(assertthat::are_equal(x = df_all_city$area, y = df_wards_sum_all$area, tol = 1.0))
 ```
 
 ### 行をグループ化する
