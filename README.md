@@ -138,7 +138,7 @@ NumPyがインストールされていなければ、インストールしてく
 |内容とリンク先|更新日|ファイル名|
 |:------------------------------|:------------------------------|:------------------------------|
 |[人口と世帯数の推移](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/jinko-setai-suii.html)|最新版(2020年まで)|jinkosetai-sui.csv|
-|[男女別人口及び世帯数－行政区](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/suikei01.html)|令和2年9月(2020年9月)|e1yokohama2009.csv|
+|[男女別人口及び世帯数－行政区](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/suikei01.html)|令和3年12月(2021年12月)|e1yokohama2112.csv|
 
 ## ライセンス
 
