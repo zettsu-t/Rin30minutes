@@ -76,15 +76,15 @@ to_embedded_table <- function(df) {
 
 本文書の[GitHubレポジトリ](https://github.com/zettsu-t/Rin30minutes)に、インストール手順があるのでそれに従う。
 
-準備ができたら、以下のコードをRStudioのConsoleに順に入力して実行する。Rスクリプトを実行するときは、拡張 .R のファイルにコードを書いて、シェルからRscriptを起動する。
+準備ができたら、以下のコードを RStudio の Console に順に入力して実行する。Rスクリプトを実行するときは、拡張 .R のファイルにコードを書いて、シェルから Rscript を起動する。
 
 ## プログラミング言語Rの基本
 
 ### 基本型
 
-基本型として、とりあえず 論理型(logical : Pythonのbool)、数値(numeric)、文字列 (character) を知っておけばよい。characterは文字列で、文字型は無い。文字コードはUnicode、エンコーディングは UTF-8 一択にする。Shift_JIS はもう忘れよう。
+基本型としてとりあえず、論理型 (logical : Pythonのbool)、数値(numeric)、文字列 (character) を知っておけばよい。characterは文字列で、文字型は無い。文字コードは Unicode、エンコーディングは UTF-8 一択にする。Shift_JIS はもう忘れよう。
 
-論理型の、真はTRUE、偽はFALSE という定数である。全部大文字である。整数と真理値を足すとき、TRUEは1に、FALSEは0として扱う。Python の `2 + True` と、R の `2 + TRUE` はどちらも 3 になる。
+論理型の、真は TRUE、偽は FALSE という定数である。全部大文字である。整数と真理値を足すとき、 TRUE は1に、 FALSE は0として扱う。Python の `2 + True` と、R の `2 + TRUE` はどちらも 3 になる。
 
 まずPythonの実行結果を示す。
 
@@ -98,7 +98,7 @@ to_embedded_table <- function(df) {
 2 + TRUE
 ```
 
-NA (欠測値 : missing value)と、変数が無い(NULL)ことを区別する。変数がNAかどうかは `is.na` で、NULLかどうかは `in.null` で調べる(細かい仕様は省略)。
+NA (欠測値 : missing value) と、変数に対応するオブジェクトが無い (NULL) ことを区別する。変数がNAかどうかは `is.na` で、NULLかどうかは `in.null` で調べる。これらの細かい仕様は省略する。
 
 ```{r is_na, class.source="r-code", class.output="r-output"}
 is.na(0)
@@ -114,7 +114,7 @@ is.null(NULL)
 2 > NA
 ```
 
-以下の結果は、C++の boost::tribool に近い。
+以下の結果は、C++の `boost::tribool` に近い。
 
 ```{r na_tribool, class.source="r-code", class.output="r-output"}
 TRUE & NA
@@ -123,7 +123,7 @@ FALSE & NA
 FALSE | NA
 ```
 
-NAは logical, numeric, character と、それぞれの型に用意されている。実は logical -> numeric -> character という変換は、必要なら暗黙に行われるので、あまり気にしなくてよい。さっきの `2 + TRUE` がそうだった。
+NAは logical, numeric, character と、それぞれの型に用意されている。実は logical → numeric → character という変換は、必要なら暗黙に行われるので、あまり気にしなくてよい。さっきの `2 + TRUE` がそうだった。
 
 数値が NA (欠測値)、正の無限大 Inf、負の無限大 -Inf、NaN (非数 : Not a Number)であることを区別する。`is.na`, `is.infinite`, `is.nan` を使って調べる。 `==` では比較しないことに注意する。RはNAとNaNを区別するので便利である(入力値が欠測なことと、計算結果がNaNであることは別なので)。
 
@@ -137,31 +137,31 @@ is.nan(0)
 is.nan(NaN)
 ```
 
-関数の説明は、`?関数名`で得られる。R Consoleから `?is.na` と入力すると、 `is.na` の説明が表示される。ネットで探すよりも速い。
+関数の説明は、`?関数名`で得られる。RStudio の Console から `?is.na` と入力すると、 `is.na` の説明が表示される。ネットで探すよりも速い。
 
 ```{r help_is_nan, eval=FALSE, echo=TRUE, class.source="r-code", class.output="r-output"}
 ?is.na
 ```
 
-Rにスカラー変数はない。C++の std::vector てきな集合、つまり型が等しい複数の要素を、インデックスで参照できる集合が、ベクトルとして用意されている。なのでスカラー変数に見えるものは、要素が1個のベクトルである。変数への代入は `<-` で行う。Getsと発音する。Pythonと同様に `=` でも代入できるが、 `<-` の方が見やすいだろう。
+Rにスカラー変数はない。C++の `std::vector` てきな集合、つまり型が等しい複数の要素を、インデックスで参照できる集合が、ベクトルとして用意されている。なのでスカラー変数に見えるものは、要素が1個のベクトルである。変数への代入は `<-` で行う。Getsと発音する。Pythonと同様に `=` でも代入できるが、 `<-` の方が見やすいと私は思う。
 
 ```{r assign_int, class.source="r-code", class.output="r-output"}
 n <- 2
 n * 3
 ```
 
-複数の即値からベクトルを作るには、 `c(15, 26, 37, 48)` というように `c` を使う。cはcombineの略である。ベクトルというか配列を作るのに `[]` を使う言語が多いのでちょっと変わっているが、すぐ慣れるだろう。
+複数の即値からベクトルを作るには、 `c(15, 26, 37, 48)` というように `c` を使う。c は combine の略である。ベクトルというか配列を作るのに `[]` を使うプログラミング言語が多いのでちょっと変わっているが、すぐ慣れるだろう。
 
 ```{r assign_vector, class.source="r-code", class.output="r-output"}
 score_vec <- c(15, 26, 37, 48)
-name_vec <- c("foo", "bar", "hoge")
+name_vec <- c("foo", "bar", "poi")
 score_vec
 name_vec
 ```
 
 出力の `[1]` は、この行はベクトルの1番目から順番に表示している、という意味である。さっきから `[1]` が必ず表示されていたのは、要素が1個のベクトルを表示していたからである。要素がたくさんあるベクトルを表示すると行を折り返すので、そのときは1より大きい数字になる。
 
-ベクトルに限らず、配列らしくインデックスがついているデータ(PandasのDataFrameてきなものも含む)の要素は、1始まりで数える。つまりベクトルvの先頭の要素は、 `v[1]` で読み書きする。PythonやCなどでは0始まりだが、Rは異なる(FortranやStanも1始まり)。
+ベクトルに限らず、配列らしくインデックスがついているデータ(PandasのDataFrameてきなものも含む)の要素は、1始まりで数える。つまりベクトル `v` の先頭の要素は、 `v[1]` で読み書きする。PythonやC++は0始まりだが、Rは異なる(FortranやStanも1始まり)。
 
 ```{r vector_element, class.source="r-code", class.output="r-output"}
 score_vec[1]
@@ -203,7 +203,7 @@ c(10, 20, 30) + c(4, 5, 6)
 10 + 4
 ```
 
-`max` は、ベクトルの要素のうち、もっとも大きい値を返す。 `max(c(10, 20, 30))` は `c(30)` 、つまり要素が1個のベクトルである。さっきの足し算が map なら、 max は reduce と考えると解りやすいだろう。
+`max` は、ベクトルの要素のうち、もっとも大きい値を返す。 `max(c(10, 20, 30))` は `c(30)` 、つまり要素が1個のベクトルである。さっきの足し算が map なら、 `max` は reduce と考えると解りやすいだろう。
 
 ```{r max_vector, class.source="r-code", class.output="r-output"}
 max(c(10, 20, 30))
@@ -215,7 +215,7 @@ max(c(10, 20, 30))
 pmax(c(10, 2, 30), c(4, 50, 6))
 ```
 
-NumPy てきな broadcasting を、Rでも行うことができる。 `c(10, 20, 30) + 4` は `c(14, 24, 34)` になる。左辺のそれぞれに4を足すというふるまいは直観的だろう。実際には右辺ベクトルの要素を、左辺ベクトルの要素数と同じになるまで繰り返している(repeat)。
+NumPy てきな broadcasting を、Rでも行うことができる。 `c(10, 20, 30) + 4` は `c(14, 24, 34)` になる。左辺のそれぞれに4を足すというふるまいは直観的だろう。実際には右辺ベクトルの要素を、左辺ベクトルの要素数と同じになるまで繰り返している (repeatという)。
 
 ```{r add_vector_int, class.source="r-code", class.output="r-output"}
 c(10, 20, 30) + 4
@@ -239,7 +239,7 @@ assert 2 ** 4 == 16
 assert 2 ** 4 != 16
 ```
 
-Rではassertthatを使う。パッケージを使う前にimportするのは、Pythonと同様である。
+Rでは assertthat を使う。パッケージを使う前に import するのは、Pythonと同様である。
 
 ```{r library_assert_r, message=FALSE, warning=FALSE, class.source="r-code", class.output="r-output"}
 library(assertthat)
@@ -263,7 +263,7 @@ NROW(4)
 NROW(c())
 ```
 
-Pythonのrangeてきな連番を作ろう。要素数n個のベクトルvに対して 1, 2, ..., n という連番の整数は、 `seq_len(n)` で作る。 `seq_len(NROW(c(10, 20, 30)))` は要素が3個なので `c(1, 2, 3)` になる。 `seq_len(NROW(c()))` は空ベクトルが返る。
+Python の `range` てきな連番を作ろう。要素数n個のベクトルvに対して 1, 2, ..., n という連番の整数は、 `seq_len(n)` で作る。 `seq_len(NROW(c(10, 20, 30)))` は要素が3個なので `c(1, 2, 3)` になる。 `seq_len(NROW(c()))` は空ベクトルが返る。
 
 ```{r seq_len_vector_int, class.source="r-code", class.output="r-output"}
 seq_len(NROW(c(10, 20, 30)))
@@ -271,11 +271,17 @@ seq_len(NROW(4))
 seq_len(NROW(c()))
 ```
 
+あるいは `1:3` と書ける。
+
+```{r seq_len_vector_colon, class.source="r-code", class.output="r-output"}
+1:3
+```
+
 続きは[等差数列](#number_sequence)の項で説明する。
 
 ### リスト
 
-型が混在する集合はlistに格納する。PythonのlistやOrderedDict、C言語の構造体と似ている。 "" が無い箇所があることに注意する。
+型が混在する集合は list に格納する。Pythonの list やC言語の構造体と似ている。以下のコードに "" (二重引用符) が無い箇所があることに注意する。
 
 ```{r list, class.source="r-code", class.output="r-output"}
 a_lst <- list(name = "foo", score = 80, year = 2019)
@@ -284,7 +290,7 @@ NROW(a_lst)
 names(a_lst)
 ```
 
-要素には `$名前` 、 `[[属性名]]` 、インデックスでアクセスできる。Pythonのenumerableな感じだ。
+要素には `$属性名` 、 `[[属性名]]` 、インデックスでアクセスできる。Pythonのenumerableな感じだ。
 
 ```{r list_elements, class.source="r-code", class.output="r-output"}
 a_lst$score
@@ -292,7 +298,7 @@ a_lst[["score"]]
 a_lst[[2]]
 ```
 
-一重カッコ `[属性名]` は、要素ではなくリストを返す。
+一重カッコ `[属性名]` は、要素ではなくリストを返す。 `is.list` はオブジェクトがリストかどうか返す。
 
 ```{r sublist, class.source="r-code", class.output="r-output"}
 a_lst["score"]
@@ -341,11 +347,11 @@ assertthat::assert_that(identical(original_vec, converted_vec))
 
 ### DataFrame (tibble)
 
-```{r import_tidyverse, warning=FALSE, class.source="r-code", class.output="r-output"}
+```{r import_tidyverse, message=FALSE, warning=FALSE, class.source="r-code", class.output="r-output"}
 library(tidyverse)
 ```
 
-PandasのDataFrameと同様に、Rにもdata.frameがある(Rが先だったかもしれないが)。だがtibbleというもっといいものがあるのでそちらを使う。まず説明用の架空データを作る。
+Pandas の DataFrame と同様に、Rにも data.frame がある (Rが先だったかもしれないが)。だが tibble の方が便利なのでそちらを使う。まず説明用の架空データを作る。
 
 ```{r create_tibble, class.source="r-code", class.output="r-output"}
 df <- tibble(name = c("foo", "bar"), score = c(80, 60), year = c(2019, 2020))
@@ -355,7 +361,7 @@ df <- tibble(name = c("foo", "bar"), score = c(80, 60), year = c(2019, 2020))
 to_embedded_table(df)
 ```
 
-変数を `print` すると今作った tibble を文字列として表示する。というより実は、変数名だけ入力すると `print` して表示していたのだった。PythonのREPLと同じである。
+変数を `print` すると今作った tibble を文字列として表示する。というより実は、変数名だけ入力すると `print` して表示していたのだった。Python の REPL と同じである。
 
 ```{r print_tibble, class.source="r-code", class.output="r-output"}
 print(df)
@@ -367,9 +373,9 @@ print(df)
 View(df)
 ```
 
-tibbleは、縦に標本を並べ、横に標本の属性を並べる。ざっくりいうと、縦に長いベクトル=すべての標本についてのそれぞれの属性を横に並べたものがtibbleと思えばよい。なので、先のリストの動作がそのまま当てはまる。
+tibble は、縦に標本を並べ、横に標本の属性を並べる。ざっくりいうと、縦に長いベクトル=すべての標本についてのそれぞれの属性を、横にいろいろと並べたものがtibbleと思えばよい。なので、先のリストの動作がそのまま当てはまる。
 
-まず score のベクトルを取得する。Pandasがそうであるように、tibbleは連想配列らしく使える。ベクトルが返るのでPandasのSeriesとは少し異なる。
+まず score のベクトルを取得する。Pandas がそうであるように、tibble は連想配列らしく使える。ベクトルが返るので Pandas の Series とは少し異なる。
 
 ```{r extract_column_as_vector, class.source="r-code", class.output="r-output"}
 df$score
@@ -377,14 +383,14 @@ df[["score"]]
 df[[2]]
 ```
 
-scoreだけを切り出したtibbleを取得する。
+score列だけを切り出した tibble を取得する。
 
 ```{r extract_column_as_tibble, class.source="r-code", class.output="r-output"}
 df["score"]
 df[2]
 ```
 
-行=標本も指定しよう。この記法はNumPyっぽく、Pandasのようにlocとは書かない。
+行=標本も指定しよう。この記法は NumPy っぽく、Pandas のように `loc` とは書かない。
 
 ```{r extract_cell, class.source="r-code", class.output="r-output"}
 df[[1, "score"]]
@@ -402,16 +408,16 @@ df[1, ]
 
 ### Matrix
 
-tibbleに比べれば覚えることが少ないので、最低限のことだけ説明する。
+tibble に比べれば覚えることが少ないので、最低限のことだけ説明する。
 
-tibbleと異なり、すべての要素を同じ型にする。まずベクトルから行列を作る。byrowで並べ方を指定する。
+tibble と異なり、すべての要素を同じ型にする。まずベクトルから行列を作る。 `byrow` で並べ方を指定する。
 
 ```{r create_matrices, class.source="r-code", class.output="r-output"}
 matrix(data = 1:6, nrow = 2, byrow = FALSE)
 matrix(data = 1:6, nrow = 2, byrow = TRUE)
 ```
 
-要素がすべて型の同じtibbleから行列を作る。
+要素がすべて型の同じ tibble から行列を作る。
 
 ```{r tibble_to_matrix, class.source="r-code", class.output="r-output"}
 df_num <- tibble(p = 1:2, q = 3:4, r = 5:6)
@@ -433,14 +439,14 @@ assertthat::assert_that(identical(df_num, df_mat_num))
 
 Rの関数は、Pythonのラムダ式である。
 
-Pythonでは以下のように、引数の2乗を返す無名関数を定義して、それをmy_squareという変数に格納し、こう呼び出せる。
+Pythonでは以下のように、引数の2乗を返す無名関数を定義して、それを my_square という変数に格納し、こう呼び出せる。
 
 ```{python lambda_python, result="asis", class.source="python-code", class.output="python-output"}
 my_square = lambda n: n * n
 my_square(9)
 ```
 
-Rではfunctionと書く。
+Rでは `function` と書く。
 
 ```{r lambda_r, class.source="r-code", class.output="r-output"}
 my_square <- function(n) {
@@ -449,7 +455,7 @@ my_square <- function(n) {
 my_square(9)
 ```
 
-Pythonと同様に、引数にキーワードをつけてもよい。引数が多いときは、キーワードをつけるとソースコードが読みやすくなるだろう。
+Pythonと同様に、引数にキーワードをつけてもよい。引数が多いときは、キーワードをつけるとソースコードが読みやすく保守しやすくなるだろう。
 
 ```{r keyword_parameters, class.source="r-code", class.output="r-output"}
 my_square(n = 9)
@@ -471,7 +477,7 @@ args <- list(base = 3, index = 2)
 do.call(my_pow, args)
 ```
 
-さて、Rの関数はすべて式(expression)である。関数が最後に評価したこと(雑に言うと{}の最後の行)が関数の返り値になる。関数定義の途中で処理を終えるのでなければ、returnと明示する必要ない(この辺はRubyっぽい)。
+さて、Rの関数はすべて式(expression)である。関数が最後に評価したこと(雑に言うと `{}` 内の最後の行)が関数の返り値になる。関数定義の途中で処理を終えるのでなければ、 `return` と明示する必要ない(この辺はRubyっぽい)。
 
 Rで負の数の対数を取ると、警告を出してNaNを返すが、代わりに-Infを返す関数を作ろう。ifも式なのでこう書ける。
 
@@ -491,13 +497,13 @@ my_log10(0.1)
 my_log10(10)
 ```
 
-最初に述べた通り、Rにスカラー変数はないので、この引数xはベクトルである。ならば、ベクトルを受け取ってベクトルを返すmap動作がRらしいだろう。PythonのPythonicに対応する言葉が、R-likeである。上記のコードがどうなるか試してみよう。
+最初に述べた通り、Rにスカラー変数はないので、この引数xはベクトルである。ならば、ベクトルを受け取ってベクトルを返すmap動作がRらしいだろう。Pythonの Pythonic に対応する言葉が、R-like である。上記のコードがどうなるか試してみよう。
 
 ```{r naive_my_log, class.source="r-code", class.output="r-output"}
 my_log10(c(-1, 0, 0.1, 10))
 ```
 
-上手くいってないようだ。改善方法は二つある。一つ目の方法は、`ifelse`を使って、ベクトルの要素ごとにthenな値とelseな値を選ぶことだ。ただしこれは、log10(負の値)が警告を出すので、見た目がよろしくない。警告ではなくエラーになる関数では使えないだろう。
+上手くいってないようだ。改善方法は二つある。一つ目の方法は、 `if` ではなく `ifelse` を使って、ベクトルの要素ごとにthenな値とelseな値を選ぶことだ。ただしこれは、log10(負の値)が警告を出すので、見た目がよろしくない。警告ではなくエラーになる関数では使えないだろう。
 
 ```{r if_else_log, class.source="r-code", class.output="r-output"}
 my_log10_alt1 <- function(xs) {
@@ -506,7 +512,7 @@ my_log10_alt1 <- function(xs) {
 my_log10_alt1(c(-1, 0, 0.1, 10))
 ```
 
-二つ目の方法は、Pythonの list comprehension てきにmapすることだ。このようにmapを使いこなすとよいだろう。
+二つ目の方法は、Pythonの list comprehension てきにmapすることだ。このようにmapを使いこなすとよいだろう。 `purrr::map_dbl` は要素が数値のベクトルを返す。
 
 ```{r map_else_log, class.source="r-code", class.output="r-output"}
 my_log10_alt2 <- function(xs) {
@@ -521,7 +527,7 @@ my_log10_alt2 <- function(xs) {
 my_log10_alt2(c(-1, 0, 0.1, 10))
 ```
 
-Rでfor文は使わないので、忘れてよい。Pythonでfor文を使う処理があったら、常にmapとreduceを使うことを検討しよう。mapの例の次に、reduceの使い方として、フィボナッチ数列を示そう。0と負の数についてはエラーになるが、それでいいだろう。
+Rでfor文は使わないので、忘れてよい。Pythonでfor文を使う処理があったら、常にmapとreduceを使うことを検討しよう。mapの例の次に、reduceの使い方としてフィボナッチ数列を示そう。0と負の数についてはエラーになるが、それでいいだろう。
 
 ```{r reduce_fib, class.source="r-code", class.output="r-output"}
 my_fib <- function(xs) {
@@ -541,7 +547,7 @@ my_fib <- function(xs) {
 my_fib(1:10)
 ```
 
-Pythonで外の lexical scope にある変数を変更するには、nonlocalを使う。以下のコードでは、`outer()` 呼び出しは1を返す。
+Pythonで外の lexical scope にある変数を変更するには、`nonlocal` を使う。以下のコードでは、`outer()` 呼び出しは1を返す。
 
 ```{python nonlocal_python, result="asis", class.source="python-code", class.output="python-output"}
 def outer():
@@ -572,7 +578,7 @@ outer <- function() {
 outer()
 ```
 
-PythonもRも、lexical scopeの範囲は、ざっくりいうと関数(defやfunction)である。なので関数が入れ子になっている場合は、nonlocalが必要になることがある。C++は `if (cond) {}` や何もキーワードがつかない `{}` も自動変数の範囲と寿命を決めているが、Rはそうではないので注意する(つまり `if` などは lexical scope を変えない)。
+PythonもRも、lexical scopeの範囲は、細かい説明を省いてざっくりいうと関数(defやfunction)である。なので関数が入れ子になっている場合は、nonlocalが必要になることがある。C++は `if (cond) {}` や何もキーワードがつかない `{}` も自動変数の範囲と寿命を決めているが、Rはそうではないので注意する(つまり `if` などは lexical scope を変えない)。
 
 ## いろいろな処理と込み入った話題
 
@@ -593,20 +599,20 @@ paste0("神奈川県", "横浜市", "中区")
 paste("神奈川県", "横浜市", "中区", sep = ":")
 ```
 
-以下のコードは意外にも、要素が3個のベクトルを返す。 `paste` はベクトルをベクトルにmapする関数である。
+以下のコードは意外にも、要素が3個のベクトルを返す。 `paste` はベクトルをベクトルに map する関数である。
 
 ```{r paste_map, class.source="r-code", class.output="r-output"}
 words <- c("神奈川県", "横浜市", "中区")
 paste(words)
 ```
 
-`collapse` を指定すると、文字列を区切り文字で連結して、単一の文字列を返す。reduceな動作になる。
+`collapse` を指定すると、文字列を区切り文字で連結 (join) して、単一の文字列を返す reduce な動作になる。
 
 ```{r paste_reduce, class.source="r-code", class.output="r-output"}
 paste(words, sep = "", collapse = ":")
 ```
 
-より高度な文字列処理はstringrパッケージを使う。PythonもRもたくさんの関数があるが、代表的なものとして正規表現で文字列を分解する例を示そう。Python の re は full matching 、R の stringr は partial matching である。
+より高度な文字列処理は stringrパッケージを使う。PythonもRもたくさんの関数があるが、代表的なものとして正規表現で文字列を分解する例を示そう。Python の reモジュールは full matching 、R の stringrパッケージは partial matching である。
 
 ```{python str_match_pythoon, eval=TRUE, result="asis", class.source="python-code", class.output="python-output"}
 import re
@@ -665,15 +671,18 @@ suppressWarnings(as.numeric("abc"))
 
 ### 等差数列 {#number_sequence}
 
-Pythonのrangeと同様のことをしたければ、 `seq` とか `1:n` とかがある。Pythonと異なりRは閉区間であり、区間の開始と終了の両方を要素に含む。また、開始番号が終了番号より小さいと、1ずつ減る数列が得られる。ベクトルのインデックスを得る場合に、これだと空のベクトルのインデックスが `c(1, 0)` になってまずい。 `seq_len` を積極的に使おう。
+Pythonの `range` と同様のことをしたければ、Rには `seq` とか `1:n` とかがある。Pythonと異なりRは閉区間であり、区間の開始と終了の両方を要素に含む。また、開始番号が終了番号より小さいと、1ずつ減る数列が得られる。ベクトルのインデックスを得る場合に、これだと空のベクトルのインデックスが `c(1, 0)` になってまずい。 `seq_len` を積極的に使おう。
 
-```{r seq_vector, class.source="r-code", class.output="r-output"}
+```{r seq_vector, error=TRUE, class.source="r-code", class.output="r-output"}
 seq(4)
 1:4
+seq_len(4)
 seq(0)
 1:0
+seq_len(0)
 seq(-2)
 1:-2
+seq_len(-2)
 ```
 
 さて差が整数ではない等差数列は、丸め誤差が発生するので、予想した長さにならないことがある。以下はPythonのコードである。 `NumPy.linspace` は数列の長さを指定するので正しい個数になるが、 `NumPy.arrange` は丸め誤差の影響で個数が合わないことがある。
@@ -725,7 +734,7 @@ elapsed_time_in_year(year = 2021, ratio = 0.162)
 elapsed_time_in_year(year = 2020, ratio = 0.162)
 ```
 
-時間(duration)を説明するついでに関数合成しよう。 `functional::Compose` は二つの関数を合成する。ここでは hh:mm:ss 書式の時間の文字列を受け取って、何秒か返す関数を作る。 function を使っても同じことをできるが、引数を書かなくて済むのですっきりする。
+時間 (duration)を説明するついでに関数合成しよう。 `functional::Compose` は二つの関数を合成する。ここでは `hh:mm:ss` 書式の時間の文字列を受け取って、何秒か返す関数を作る。 `function` を使っても同じことをできるが、引数を書かなくて済むのですっきりする。
 
 ```{r hms_to_seconds, class.source="r-code", class.output="r-output"}
 library(functional)
@@ -765,7 +774,7 @@ ct.increment()
 print(ct.get())
 ```
 
-RではR6を使う。ほぼPythonと同様に書ける。publicとprivateと明記するところがC++みたいだ。
+Rでは R6パッケージを使う。ほぼPythonと同様に書ける。public, private と明記するところがC++みたいだ。
 
 ```{r counter_class_r6, class.source="r-code", class.output="r-output"}
 library(R6)
@@ -801,7 +810,7 @@ print(ct$get())
 
 ### 参照渡しと copy-on-modify
 
-Rでは、呼び出された関数は引数を変更できるが、その変更は呼び出し側には伝わらない(そうでない場合についてはすぐ後で述べる)。これはPythonとの大きな違いである。より正確に言うと、引数を変更するとcopy-on-modifyされる。変更しなければcopyのコストが発生しないので、実質的には低コストな参照渡しのように動作する。
+Rでは、呼び出された関数は引数を変更できるが、その変更は呼び出し側には伝わらない(そうでない場合についてはすぐ後で述べる)。これはPythonとの大きな違いである。より正確に言うと、引数を変更すると copy-on-modify される。引数を変更しなければコピーするコストが発生しないので、実質的には低コストな参照渡しのように動作する。
 
 Pythonで、配列の要素をすべて2倍にするとき、こう書ける。
 
@@ -819,7 +828,7 @@ doubler(v)
 v
 ```
 
-rで同様のコードを書くとどうなるだろうか? 忘れていたfor文を敢えて使って書こう。
+Rで同様のコードを書くとどうなるだろうか? 忘れていたfor文を敢えて使って書こう。
 
 ```{r double_for_r, class.source="r-code", class.output="r-output"}
 doubler <- function(x) {
@@ -835,7 +844,7 @@ doubler(v)
 v
 ```
 
-doublerの中では二倍になったようだが(和が20なので)、呼び出し元の変数vは変わらなかった。これがcopy-on-modifyである。
+doubler の中では二倍になったようだが(和が20なので)、呼び出し元の変数vは変わらなかった。これが copy-on-modify である。
 
 Rでは引数を上書きすることは諦めて、値を返す関数を素直にmapで書こう。 `~ .x * 2` は無名関数の略記法である。今は深入りしないが、いずれ役に立つことがあるだろう。
 
@@ -874,14 +883,30 @@ print(ct_caller.get())
 
 ### デフォルト値
 
-Pythonで関数呼び出しに失敗した場合にデフォルト値を得ようとしたら、try-except構文を使うだろう。Rでは `purrr::possibly` を使って、デフォルト値を返す関数を作る。 `stop` はエラーを発生させる関数である。
+Pythonで関数呼び出しに失敗した場合にデフォルト値を得ようとしたら、try-except構文を使うだろう。
 
-```{r possibly, error=TRUE, class.source="r-code", class.output="r-output"}
-suspicious_func <- function(x) {
+```{python possibly_python, result="asis", class.source="python-code", class.output="python-output"}
+import math
+def str_to_float(x: str) -> float:
+  value = math.nan
+  try:
+    value = float(x)
+  except ValueError:
+    pass
+  return(value)
+
+math.isnan(str_to_float("1.25"))
+math.isnan(str_to_float("x.y.z"))
+```
+
+Rでは `purrr::possibly` を使って、デフォルト値を返す関数を作る。 `stop` はエラーを発生させる関数である。
+
+```{r possibly_r, error=TRUE, class.source="r-code", class.output="r-output"}
+func_may_unsupported <- function(x) {
   stop("Unsupported")
 }
 
-safe_func <- purrr::possibly(suspicious_func, NA)
+safe_func <- purrr::possibly(func_may_unsupported, NA)
 safe_func(1)
 ```
 
@@ -993,19 +1018,16 @@ stop_if_not_equal(value1 = -5, value2 = 6)
 
 コマンドライン引数は、 `commandArgs` で文字列ベクトルとして取得する。 `trailingOnly=FALSE` にするとすべての引数、 `trailingOnly=TRUE` にすると --args および以降の引数(--argsがなければ空文字列ベクトル)を取得する。R処理系に渡す引数を無視して、Rスクリプトだけに渡す引数を取得するために、 `trailingOnly=TRUE` を使うとよい。
 
-```{r command_args, eval=FALSE, echo=TRUE, class.source="r-code", class.output="r-output"}
-commandArgs(trailingOnly = FALSE)
+```{r command_args, eval=FALSE, echo=FALSE, class.source="r-code", class.output="r-output"}
 commandArgs(trailingOnly = TRUE)
 ```
 
-```{r launch_command_args, eval=TRUE, echo=FALSE, class.source="r-code", class.output="r-output"}
+```{r launch_command_args, eval=FALSE, echo=FALSE, class.source="r-code", class.output="r-output"}
 commandArgs(trailingOnly = FALSE) %>% purrr::discard(~ stringr::str_detect(.x, "\\.Rmd"))
 commandArgs(trailingOnly = TRUE)
 ```
 
-コマンドライン引数のオプションを解析するのは、Pythonではargparseを使い、Rではoptparseを使うとよいだろう。両者はほとんど同じである。R MarkdownをHTML化したときの引数を出したが、 R Markdown ファイルの場所がフルパスで見えてしまうのは削除した。
-
-RStudioでスクリプトを実行したときは、コマンドライン引数としてオプションを渡すことができない。対策としては、グローバル変数(仮に g_args と名付ける)があったらコマンドライン引数の代わりに扱い、そうでなければ実際のコマンドライン引数を `commandArgs` を呼び出して取得する、とすればよい。変数があるかどうかは、先ほどの `exists` を使う。
+RStudio 上でRスクリプトを実行したときは、コマンドライン引数としてオプションを渡すことができない。対策としては、グローバル変数(仮に g_args と名付ける)があったらコマンドライン引数の代わりに扱い、そうでなければ実際のコマンドライン引数を `commandArgs` を呼び出して取得する、とすればよい。変数があるかどうかは、先ほどの `exists` を使う。
 
 ```{r delete_command_args, eval=TRUE, echo=FALSE, class.source="r-code", class.output="r-output"}
 if (exists("g_args")) {
@@ -1075,7 +1097,7 @@ print(df_timeseries)
 df_timeseries$年（和暦）
 ```
 
-という風に、 `(` が上手く構文解析できないのでエラーになってしまった。このように構文中に埋め込む名前として使えるものを syntactic name 、そうでないものを non-syntactic name と呼ぶ。詳しい解説は[Advanced R](https://adv-r.hadley.nz/names-values.html)にあるが、ここでは間にあわせの回避策だけ述べよう。
+という風に、 `(` が上手く構文解析できないのでエラーになってしまった。構文中に埋め込む名前として使えるものを syntactic name 、そうでないものを non-syntactic name と呼ぶ。詳しい解説は[Advanced R](https://adv-r.hadley.nz/names-values.html)にあるが、ここでは間にあわせの回避策だけ述べよう。
 
 一つ目は、列名を ` (backtick)で囲むことである。
 
@@ -1177,14 +1199,14 @@ library(plotly)
 ## plotly::ggplotly(g)
 ```
 
-図をPNGファイルに保存するには、 `ggsave` を使う。 `file.path` はディレクトリ名 out_dirname と ファイル名を結合する。 / で結合するよりも正しい作法である。
+図をPNGファイルに保存するには、 `ggsave` を使う。 `file.path` はディレクトリ名 out_dirname と ファイル名を結合する。Pythonで `os.path.join` を使うのと同様に、 / で結合するよりも正しい作法である。
 
 ```{r ggsave_png, message=FALSE, class.source="r-code", class.output="r-output"}
 png_filename <- file.path(out_dirname, "yokohama_population.png")
 ggsave(png_filename, plot = g, dpi = 160)
 ```
 
-図をPNGファイルに保存するために `png` と `dev.off` で囲んでもよいが、その場合は高さと幅のピクセル数を固定する必要がある。縦横比を変えたくないときはうれしくないだろう。
+図をPNGファイルに保存するために `png` と `dev.off` で囲んでもよいが、その場合は高さと幅のピクセル数を固定する必要がある。ピクセル数を指定できるのは便利だが、縦横比を変えたくないときは `ggsave` の方がよいだろう。
 
 ```{r save_png, message=FALSE, class.source="r-code", class.output="r-output"}
 png(filename = png_filename, width = 800, height = 600)
@@ -1233,7 +1255,7 @@ df_population %>%
 df_wards <- df_population %>%
   dplyr::filter(stringr::str_ends(ward, "区"))
 
-df_all_city <- df_population %>%
+df_whole_city <- df_population %>%
   dplyr::filter(!stringr::str_ends(ward, "区"))
 ```
 
@@ -1243,8 +1265,8 @@ df_all_city <- df_population %>%
 df_population %>% dplyr::filter(ward != "横浜市")
 ```
 
-```{r print_all_city, echo=FALSE, class.source="r-code", class.output="r-output"}
-df_all_city %>%
+```{r print_whole_city, echo=FALSE, class.source="r-code", class.output="r-output"}
+df_whole_city %>%
   to_embedded_table()
 ```
 
@@ -1287,11 +1309,12 @@ assertthat::assert_that(identical(df_population, df_population_alt))
 
 ### それぞれの行を集計する
 
-df_wards には、 `1世帯当たり人員[人]` (per_household 列)と `人口密度[人/平方キロメートル]` (density 列)がある。これらは、人口(population 列)、世帯数(household 列) 、面積(area 列)から計算できる。 `dplyr::mutate` で実際に計算して列を作ろう。
+df_wards には、 `1世帯当たり人員[人]` (per_household 列) と `人口密度[人/平方キロメートル]` (density 列) がある。これらは、人口 (population 列)、世帯数 (household 列)、面積 (area 列) から計算できる。 `dplyr::mutate` で実際に計算して列を作ろう。
 
 ```{r mutate_wards, class.source="r-code", class.output="r-output"}
 df_wards_calc <- df_wards %>%
-  dplyr::mutate(per_household_calc = population / household, density_calc = population / area)
+  dplyr::mutate(per_household_calc = population / household,
+                density_calc = population / area)
 ```
 
 元データの per_household と計算で求めた per_household_calc 、元データの density と計算で求めた density_calc が等しいか確認しよう。浮動小数ベクトルが丸め誤差を除いて大体同じかどうかは、 `assertthat::are_equal` で許容誤差 tol を与えて比べる。
@@ -1320,6 +1343,10 @@ are_near_values
 all(are_near_values)
 ```
 
+```{r assert_near_calc, eval=TRUE, echo=FALSE}
+assertthat::assert_that(all(are_near_values))
+```
+
 ちなみに `dplyr::mutate` の代入先もシンボルであり、実行時に文字列を与えるときは `rlang::sym` を使う。このときは `=` ではなく `:=` を使う。代入先ではなく代入元がシンボルの場合も同様である。
 
 ```{r mutate_wards_sym, class.source="r-code", class.output="r-output"}
@@ -1328,7 +1355,8 @@ df_wards_calc_dst <- df_wards %>%
   dplyr::mutate(!!rlang::sym(dst_column_name) := population / household)
 
 assertthat::assert_that(
-  assertthat::are_equal(df_wards_calc$per_household_calc, df_wards_calc_dst$per_household_calc)
+  assertthat::are_equal(
+    df_wards_calc$per_household_calc, df_wards_calc_dst$per_household_calc)
 )
 
 src1_column_name <- "population"
@@ -1344,7 +1372,7 @@ assertthat::assert_that(
 
 ### それぞれの列を集計する
 
-全区の世帯数と人口を足して、横浜市全体 df_all_city と同じかどうか確かめる。 `dplyr::summarize_at` と `sum` を使って、列の全要素を足す。
+全区の世帯数と人口を足して、横浜市全体 df_whole_city と同じかどうか確かめる。 `dplyr::summarize_at` と `sum` を使って、列の全要素を足す。
 
 ```{r sum_wards, class.source="r-code", class.output="r-output"}
 df_wards_sum <- df_wards_calc %>%
@@ -1357,8 +1385,8 @@ df_wards_sum %>%
 ```
 
 ```{r verify_sum, class.source="r-code", class.output="r-output"}
-assertthat::assert_that(df_all_city$household == df_wards_sum$household)
-assertthat::assert_that(df_all_city$population == df_wards_sum$population)
+assertthat::assert_that(df_whole_city$household == df_wards_sum$household)
+assertthat::assert_that(df_whole_city$population == df_wards_sum$population)
 ```
 
 各区の合計は市全体と一致したようだ。
@@ -1374,7 +1402,7 @@ df_wards_sum_all <- df_wards %>%
 面積もあっているようだ。
 
 ```{r verify_sum_all, class.source="r-code", class.output="r-output"}
-assertthat::assert_that(assertthat::are_equal(x = df_all_city$area, y = df_wards_sum_all$area, tol = 1.0))
+assertthat::assert_that(assertthat::are_equal(x = df_whole_city$area, y = df_wards_sum_all$area, tol = 1.0))
 ```
 
 ### 行をグループ化する
@@ -1509,7 +1537,7 @@ plot(g)
 
 ### CSVファイルを出力する
 
-`readr::write_excel_csv` を使って、BOMつきUTF-8でCSVファイルを書く。こうしておくとExcelで読める(BOMがないとExcelで読めない)。Pandasと同様、gzip形式で読み書きできる。
+`readr::write_excel_csv` を使って、BOMつきUTF-8でCSVファイルを書く。こうしておくとExcelで読める (BOMがないとExcelで読めない)。Pandasと同様、gzip形式で読み書きできる。
 
 ```{r write_group_tax_offices, class.source="r-code", class.output="r-output"}
 readr::write_excel_csv(df_ward_tax_offices,
@@ -1546,7 +1574,7 @@ print(data_chigasaki)
 class(data_chigasaki)
 ```
 
-JSONファイルをリストとして読み込んだことが分かる。Rにはスカラー変数が無いので、要素(リスト構造の末端)はすべてベクトルである。論理型、数値、文字列型が上手く推測されたことが分かる。日付は必要なら変換しよう。
+JSONファイルをリストとして読み込んだことが分かる。Rにはスカラー変数が無いので、要素 (木構造の末端)はすべてベクトルである。論理型、数値、文字列型が上手く推測されたことが分かる。日付は必要なら変換しよう。
 
 ```{r json_date, class.source="r-code", class.output="r-output"}
 data_yokohama$date <- lubridate::ymd(data_yokohama$date)
@@ -1578,7 +1606,7 @@ cat(xfun::read_utf8(out_json_filename), sep = "\n")
 
 ### Jupyter Notebook と R Markdown
 
-Pythonでコードを試しながら書く場合、Jupyter Notebook を使っている方が多いだろう。Jupyter Notebook とRという組み合わせも可能である。もう一つの選択肢は、 R Markdown である。まさにこの文書の元は R Markdown で、それをHTMLに変換したものを見ているはずである。
+Pythonでコードを試しながら書く場合、Jupyter Notebook を使っている方が多いだろう。Jupyter Notebook とRという組み合わせも可能である。もう一つの選択肢は、 R Markdown である。まさにこの文書の元は R Markdown で、それを直接HTMLに変換したものか、 Markdown に変換したもののHTML表示を見ているはずである。
 
 ### コードの整形と静的解析
 
@@ -1586,7 +1614,7 @@ Pythonのコードは、 autopep8 で整形して、pylint, pep8, flake8, mypy �
 
 Rは styler パッケージでコードを整形して、 lintr パッケージでコードの問題点を静的解析して指摘するとよい。 styler はRスクリプト(.Rファイル)だけでなく、R Markdown (.Rmdファイル)も整形できる。
 
-lintr で問題点を挙げるとき、スクリプトが完成してから lintr を通すと大量の問題点を指摘されて降参しかねないので、毎日細かく通すとよい。CI (Continuous Integration)を使っているなら、毎登録(git push)ごとにすればよい。もちろん lintr の前に、 styler で自動的に整形することもできる。
+lintr で問題点を挙げるとき、スクリプトが完成してから lintr を通すと大量の問題点を指摘されて降参しかねないので、毎日細かく通すとよい。CI (Continuous Integration) を使っているなら、毎登録 (git push) ごとにすればよい。もちろん lintr の前に、 styler で自動的に整形することもできる。
 
 lintr よくある指摘は以下の通りである。
 
@@ -1598,7 +1626,7 @@ lintr よくある指摘は以下の通りである。
 
 ### コードの論理行数
 
-cloc パッケージで、ファイルの論理行、コメント行、空行を数えることができる。Rだけでなくさまざまなプログラミング言語に対応している。Perlが必要なので、Windows の場合は perl (Cygwin可)にPATHを通しておく。ファイル名だけでなくURLを指定することもできる。[A Shiny app developed with the golem package](https://github.com/zettsu-t/nbinomPlot)にあるファイルの行数を測ろう。
+cloc パッケージで、ファイルの論理行、コメント行、空行を数えることができる。Rだけでなくさまざまなプログラミング言語に対応している。Perlが必要なので、Windows の場合は perl.exe がある場所にPATHを通しておく。ファイル名だけでなくURLを指定することもできる。[A Shiny app developed with the golem package](https://github.com/zettsu-t/nbinomPlot) にあるファイルの行数を測ろう。
 
 ```{r cloc, eval=FALSE, echo=TRUE, class.source="r-code", class.output="r-output"}
 library(cloc)
@@ -1615,29 +1643,31 @@ cloc::cloc_pkg() %>%
 
 ### パッケージ化
 
-Pythonでwheelパッケージを作成して成果物を配布できるのと同様、Rもパッケージを作成して成果物を配布できる。詳細は後述の参考文献を読んで頂くとして、RStudioのBuildタブを開いてCheckボタンを押すだけで、自作したRパッケージを検査して問題点を挙げることができる。なので、配布するパッケージにドキュメントなどがそろっていて十分な品質かどうかを、簡単に確認できる。
+Pythonで wheelパッケージを作成して成果物を配布できるのと同様、Rもパッケージを作成して成果物を配布できる。詳細は後述の参考文献を読んで頂くとして、RStudio の Buildタブを開いて Check ボタンを押すだけで、自作したRパッケージを検査して問題点を挙げることができる。配布するパッケージにドキュメントなどがそろっていて十分な品質かどうかを、簡単に確認できる。
 
 ## 次に進むには
 
-最初に[データサイエンス100本ノック（構造化データ加工編）](https://github.com/The-Japan-DataScientist-Society/100knocks-preprocess)を解いて、PythonのDataFrameと、Rのtibbleの違いを覚えるとよいでしょう。
+最初に[データサイエンス100本ノック（構造化データ加工編）](https://github.com/The-Japan-DataScientist-Society/100knocks-preprocess)を解いて、Pythonの DataFrame と、Rの tibble の違いを覚えるとよいでしょう。
 
 参考書としては、以下の順番が一案です。
 
-- 最初に読むのは、「Rではじめるデータサイエンス」 (原著 : [R for Data Science](https://r4ds.had.co.nz/) )
-- Rをもっと使いこなすなら、「Rクックブック 第2版」 (原著 : [R Cookbook 2nd Edition](https://rc2e.com/) )
-- RStudioとR Markdownの使い方を学ぶなら、「再現可能性のすゝめ ―RStudioによるデータ解析とレポート作成― (Wonderful R 3)」 または、 「RユーザのためのRStudio［実践］入門 ―tidyverseによるモダンな分析フローの世界―」
-- RStudioだけでなくコマンドラインを使いこなしたいなら、「バイオインフォマティクスデータスキル」 (原著 : Bioinformatics Data Skills)
-- プログラミング言語Rを深く知りたいなら、「R言語徹底解説」(ただし和訳は版が古い、原著 : [Advanced R](https://adv-r.hadley.nz/) )。 [公式マニュアル](https://cran.r-project.org/manuals.html)より読みやすいと思います。
+- 最初に読むのは、「Rではじめるデータサイエンス」 (原著: [R for Data Science](https://r4ds.had.co.nz/) )
+- Rをもっと使いこなすなら、「Rクックブック 第2版」 (原著: [R Cookbook 2nd Edition](https://rc2e.com/) )
+- RStudioとR Markdownの使い方を学ぶなら、「再現可能性のすゝめ ―RStudioによるデータ解析とレポート作成― (Wonderful R 3)」 または、 「改訂2版 Rユーザのための RStudio［実践］入門 ―tidyverseによるモダンな分析フローの世界―」
+- 「みんなのR 第2版」 (原著: R for Everyone 2nd edition)、「パーフェクトR」もよいでしょう。
+- RStudioだけでなくコマンドラインを使いこなしたいなら、「バイオインフォマティクスデータスキル」 (原著: Bioinformatics Data Skills)
+- プログラミング言語Rを深く知りたいなら、「R言語徹底解説」(ただし和訳は版が古い、原著: [Advanced R](https://adv-r.hadley.nz/) )。 [公式マニュアル](https://cran.r-project.org/manuals.html)より読みやすいと思います。
 - Rパッケージの作成を通じて、配布可能な成果物の作り方を学びたいなら、「Rパッケージ開発入門 テスト、文書化、コード共有の手法を学ぶ」(原著 : [R packages](http://r-pkgs.had.co.nz/) )
 - ブラウザから対話的に表示を変えたいなら、Shinyの使い方を学ぶ。「RとShinyで作るWebアプリケーション」を読んでから、[Mastering Shiny](https://mastering-shiny.org/)を読み、そのあと[Engineering Production-Grade Shiny Apps](https://engineering-shiny.org/)を読むとよいでしょう。
-- Rだけでは足りなくて、C++で処理を書きたいなら、 [みんなのRcpp](https://teuder.github.io/rcpp4everyone_ja/) を読んでRcppパッケージを使う。
+- Rだけでは足りなくて、C++で処理を書きたいなら、 [みんなのRcpp](https://teuder.github.io/rcpp4everyone_ja/) を読んで Rcppパッケージを使います。
 
 |書名|著者|年|出版社またはリンク|
 |:--------------------------|:---------------------------------------------------------|:--------|:--------------------------|
 |R for Data Science|Garrett Grolemund and Hadley Wickham|2017|https://r4ds.had.co.nz/|
 |R Cookbook 2nd Edition|James (JD) Long and Paul Teetor|2019|https://rc2e.com/|
+|R for Everyone 2nd edition|Jared P. Lander|2017|Addison-Wesley Professional|
 |Bioinformatics Data Skills|Vince Buffalo|2015|O'Reilly Media|
-|Advanced R|Hadley Wickham|2019|https://adv-r.hadley.nz/|
+|Advanced R 2nd edition|Hadley Wickham|2019|https://adv-r.hadley.nz/|
 |R packages|Hadley Wickham|2015|http://r-pkgs.had.co.nz/|
 |Mastering Shiny|Hadley Wickham|2020|https://mastering-shiny.org/|
 |Engineering Production-Grade Shiny Apps|Colin Fay, Sébastien Rochette, Vincent Guyader and Cervan Girard|2021|https://engineering-shiny.org/|
@@ -1647,11 +1677,11 @@ Pythonでwheelパッケージを作成して成果物を配布できるのと同
 |Rではじめるデータサイエンス|Hadley Wickham, Garrett Grolemund 著/黒川利明 訳/大橋真也 監修|2017|オライリー・ジャパン|
 |Rクックブック 第2版|J.D. Long, Paul Teetor 著/大橋真也 監訳/木下哲也 訳|2020|オライリー・ジャパン|
 |再現可能性のすゝめ ―RStudioによるデータ解析とレポート作成― (Wonderful R 3)|高橋康介 著/石田基広 監修/市川太祐, 高橋康介, 高柳慎一, 福島真太朗, 松浦健太郎 編|2018|共立出版|
-|バイオインフォマティクスデータスキル オープンソースツールを使ったロバストで再現性のある研究|Vince Buffalo 著/片山俊明, 川島秀一, 鈴木治夫, 山本泰智 監訳/酒匂寛, 山村吉信 訳|2020|オライリー・ジャパン|
-|RユーザのためのRStudio［実践］入門 ―tidyverseによるモダンな分析フローの世界―|松村優哉, 湯谷啓明, 紀ノ定保礼, 前田和寛 著|2018|技術評論社|
-|R言語徹底解説|Hadley Wickham 著/石田基広, 市川太祐, 高柳慎一, 福島真太朗 訳|2016|共立出版|
+|改訂2版 Rユーザのための RStudio［実践］入門 ―tidyverseによるモダンな分析フローの世界―|松村優哉, 湯谷啓明, 紀ノ定保礼, 前田和寛 著|2021|技術評論社|
 |みんなのR 第2版|Jared P. Lander 著/高柳慎一, 津田真樹, 牧山幸史, 松村杏子, 簑田高志 監修|2018|マイナビ出版|
 |パーフェクトR|Rサポーターズ 著|2017|技術評論社|
+|バイオインフォマティクスデータスキル オープンソースツールを使ったロバストで再現性のある研究|Vince Buffalo 著/片山俊明, 川島秀一, 鈴木治夫, 山本泰智 監訳/酒匂寛, 山村吉信 訳|2020|オライリー・ジャパン|
+|R言語徹底解説|Hadley Wickham 著/石田基広, 市川太祐, 高柳慎一, 福島真太朗 訳|2016|共立出版|
 |Rパッケージ開発入門 テスト、文書化、コード共有の手法を学ぶ|Hadley Wickham 著/瀬戸山雅人, 石井弓美子, 古畠敦 訳|2016|オライリー・ジャパン|
 |RとShinyで作るWebアプリケーション|梅津雄一, 中野貴広 著|2018|C&R研究所|
 |みんなのRcpp|Masaki E. Tsuda 著|2020|https://teuder.github.io/rcpp4everyone_ja/|
