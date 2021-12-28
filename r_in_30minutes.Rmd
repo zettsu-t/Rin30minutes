@@ -36,6 +36,7 @@ cat('<style type="text/css" rel="stylesheet">\n.python { background-color: laven
 ```
 
 ```{r setup_packages, eval=FALSE, echo=FALSE}
+Sys.setlocale("LC_ALL", "ja_JP.UTF-8")
 ## knitではなく各コードチャンクを逐次実行するときは、以下を実行する
 install.packages("tidyverse")
 install.packages("assertthat")
@@ -43,11 +44,14 @@ install.packages("cloc")
 install.packages("extrafont")
 install.packages("functional")
 install.packages("jsonlite")
+install.packages("kableExtra")
 install.packages("lubridate")
 install.packages("plotly")
-install.packages("RColorBrewer")
-install.packages("rlang")
 install.packages("R6")
+install.packages("RColorBrewer")
+install.packages("reticulate")
+install.packages("rlang")
+install.packages("xfun")
 ```
 
 ```{r setup_r_packages, include=FALSE}
@@ -74,7 +78,7 @@ to_embedded_table <- function(df) {
 
 ## 準備
 
-本文書の[GitHubレポジトリ](https://github.com/zettsu-t/Rin30minutes)に、インストール手順があるのでそれに従う。
+本文書の [GitHubレポジトリ](https://github.com/zettsu-t/Rin30minutes) に、インストール手順があるのでそれに従う。
 
 準備ができたら、以下のコードを RStudio の Console に順に入力して実行する。Rスクリプトを実行するときは、拡張 .R のファイルにコードを書いて、シェルから Rscript を起動する。
 
@@ -82,7 +86,7 @@ to_embedded_table <- function(df) {
 
 ### 基本型
 
-基本型としてとりあえず、論理型 (logical : Pythonのbool)、数値(numeric)、文字列 (character) を知っておけばよい。characterは文字列で、文字型は無い。文字コードは Unicode、エンコーディングは UTF-8 一択にする。Shift_JIS はもう忘れよう。
+基本型としてとりあえず、論理型 (logical : Pythonのbool)、数値 (numeric)、文字列 (character) を知っておけばよい。characterは文字列で、文字型は無い。文字コードは Unicode、エンコーディングは UTF-8 一択にする。Shift_JIS はもう忘れよう。
 
 論理型の、真は TRUE、偽は FALSE という定数である。全部大文字である。整数と真理値を足すとき、 TRUE は1に、 FALSE は0として扱う。Python の `2 + True` と、R の `2 + TRUE` はどちらも 3 になる。
 
@@ -168,7 +172,7 @@ score_vec[1]
 name_vec[2]
 ```
 
-Pythonと同様、複数の値を指定することもできる。
+NumPy と同様、複数のインデックスを指定することもできる。
 
 ```{r vector_elements, class.source="r-code", class.output="r-output"}
 score_vec[c(1, 4)]
@@ -263,18 +267,23 @@ NROW(4)
 NROW(c())
 ```
 
-Python の `range` てきな連番を作ろう。要素数n個のベクトルvに対して 1, 2, ..., n という連番の整数は、 `seq_len(n)` で作る。 `seq_len(NROW(c(10, 20, 30)))` は要素が3個なので `c(1, 2, 3)` になる。 `seq_len(NROW(c()))` は空ベクトルが返る。
+Python の `range` てきな連番を作ろう。要素数n個のベクトルvに対して 1, 2, ..., n という連番の整数は、 `seq_len(n)` で作る。
 
-```{r seq_len_vector_int, class.source="r-code", class.output="r-output"}
-seq_len(NROW(c(10, 20, 30)))
-seq_len(NROW(4))
-seq_len(NROW(c()))
+```{r seq_len_basic, class.source="r-code", class.output="r-output"}
+seq_len(3)
 ```
 
-あるいは `1:3` と書ける。
+`1:3` とも書ける。
 
 ```{r seq_len_vector_colon, class.source="r-code", class.output="r-output"}
 1:3
+```
+
+`seq_len(NROW())` でベクトルのインデックスを作れる。`seq_len(NROW(c(10, 20, 30)))` は要素が3個なので `c(1, 2, 3)` になる。 `seq_len(NROW(c()))` は空ベクトルが返る。
+
+```{r seq_len_vector_int, class.source="r-code", class.output="r-output"}
+seq_len(NROW(c(10, 20, 30)))
+seq_len(NROW(c()))
 ```
 
 続きは[等差数列](#number_sequence)の項で説明する。
@@ -408,7 +417,7 @@ df[1, ]
 
 ### Matrix
 
-tibble に比べれば覚えることが少ないので、最低限のことだけ説明する。
+Matrix は tibble に比べれば覚えることが少ないので、最低限のことだけ説明する。
 
 tibble と異なり、すべての要素を同じ型にする。まずベクトルから行列を作る。 `byrow` で並べ方を指定する。
 
@@ -433,7 +442,7 @@ df_mat_num
 assertthat::assert_that(identical(df_num, df_mat_num))
 ```
 
-演算、転置、3次元以上の配列の生成などはもちろんできるので、必要になったら調べればよい。
+演算、転置、3次元以上の配列 (array) の生成などはもちろんできるので、必要になったら調べればよい。
 
 ### 関数
 
@@ -801,7 +810,7 @@ Counter <- R6::R6Class("Counter",
   )
 )
 
-ct = Counter$new()
+ct <- Counter$new()
 print(ct$get())
 ct$increment()
 ct$increment()
@@ -930,8 +939,8 @@ a_glogal_var <- 1
 check_vars_exists <- function() {
   a_local_var <- 2
   assertthat::assert_that(exists("a_glogal_var")) &
-  assertthat::assert_that(exists("a_local_var")) &
-  assertthat::assert_that(!exists("missing_var"))
+    assertthat::assert_that(exists("a_local_var")) &
+    assertthat::assert_that(!exists("missing_var"))
 }
 
 check_vars_exists()
@@ -1129,12 +1138,12 @@ plot(g)
 
 いろいろと見た目を変えたり、要素を付け加えることもできる。詳しくは [R for Data Science](https://r4ds.had.co.nz/data-visualisation.html)に例がたくさんある。
 
-- 折れ線の色を青くして太くする
 - X軸の刻みを10年間隔にする
+- フォントを Segoe UI にして(フォントがなければデフォルトのsansフォントにする)、フォントのサイズを指定する
+- 折れ線の色を青くして太くする
 - タイトルをつける
 - 背景を白にする
 - 高さを幅の0.6倍にする
-- フォントを Segoe UI にして、フォントのサイズを指定する
 
 ```{r make_breaks, class.source="r-code", class.output="r-output"}
 year_unit <- 10
@@ -1152,9 +1161,16 @@ x_breaks <- setdiff(
 )
 ```
 
-```{r draw_fancy_table_timeseries, message=FALSE, class.source="r-code", class.output="r-output"}
+```{r set_font_name, message=FALSE, class.source="r-code", class.output="r-output"}
 library(extrafont)
 font_name <- "Segoe UI"
+font_set <- extrafont::fonts()
+if (is.null(font_set) || !(font_name %in% font_set)) {
+  font_name <- "sans"
+}
+```
+
+```{r draw_fancy_table_timeseries, message=FALSE, class.source="r-code", class.output="r-output"}
 g <- ggplot(df_timeseries)
 g <- g + geom_line(aes(x = Year, y = Population), color = "navy", size = 2)
 g <- g + scale_x_continuous(breaks = x_breaks)
@@ -1173,7 +1189,6 @@ plot(g)
 tibbleの列名は英語にしても、図の表示は日本語にしたいということがあるだろう。 Migu 1M フォントで表示する。
 
 ```{r draw_jp_table_timeseries, class.source="r-code", class.output="r-output"}
-font_name <- "Segoe UI"
 font_name_jp <- "Migu 1M"
 g <- ggplot(df_timeseries)
 g <- g + geom_line(aes(x = Year, y = Population), color = "navy", size = 2)
@@ -1280,6 +1295,7 @@ library(rlang)
 ward_column_name <- "ward"
 df_wards_alt <- df_population %>%
   dplyr::filter(!!rlang::sym(ward_column_name) != "横浜市")
+
 assertthat::assert_that(identical(df_wards, df_wards_alt))
 ```
 
@@ -1313,8 +1329,10 @@ df_wards には、 `1世帯当たり人員[人]` (per_household 列) と `人口
 
 ```{r mutate_wards, class.source="r-code", class.output="r-output"}
 df_wards_calc <- df_wards %>%
-  dplyr::mutate(per_household_calc = population / household,
-                density_calc = population / area)
+  dplyr::mutate(
+    per_household_calc = population / household,
+    density_calc = population / area
+  )
 ```
 
 元データの per_household と計算で求めた per_household_calc 、元データの density と計算で求めた density_calc が等しいか確認しよう。浮動小数ベクトルが丸め誤差を除いて大体同じかどうかは、 `assertthat::are_equal` で許容誤差 tol を与えて比べる。
@@ -1356,7 +1374,8 @@ df_wards_calc_dst <- df_wards %>%
 
 assertthat::assert_that(
   assertthat::are_equal(
-    df_wards_calc$per_household_calc, df_wards_calc_dst$per_household_calc)
+    df_wards_calc$per_household_calc, df_wards_calc_dst$per_household_calc
+  )
 )
 
 src1_column_name <- "population"
@@ -1479,10 +1498,11 @@ as.integer(df_factor$tax_office)
 
 先ほどとは整数の割り当てが異なる。図にしたとき、凡例が五十音順になることを確かめよう。
 
+
+
+
 ```{r draw_relevel_tax_offices, class.source="r-code", class.output="r-output"}
 library(RColorBrewer)
-font_name <- "Segoe UI"
-font_name_jp <- "Migu 1M"
 g <- ggplot(df_factor)
 g <- g + geom_point(aes(x = per_household, y = density, color = tax_office), size = 4, shape = 4)
 g <- g + geom_text(aes(x = per_household, y = density, label = ward),
@@ -1540,10 +1560,12 @@ plot(g)
 `readr::write_excel_csv` を使って、BOMつきUTF-8でCSVファイルを書く。こうしておくとExcelで読める (BOMがないとExcelで読めない)。Pandasと同様、gzip形式で読み書きできる。
 
 ```{r write_group_tax_offices, class.source="r-code", class.output="r-output"}
-readr::write_excel_csv(df_ward_tax_offices,
+readr::write_excel_csv(
+  df_ward_tax_offices,
   file.path(out_dirname, "yokohama_tax_office.csv")
 )
-readr::write_excel_csv(df_ward_tax_offices,
+readr::write_excel_csv(
+  df_ward_tax_offices,
   file.path(out_dirname, "yokohama_tax_office.csv.gz")
 )
 ```
@@ -1706,3 +1728,9 @@ sys.version
 ### 本文書のライセンス
 
 本 R Markdown 文書のライセンスは、この文書がある GitHub レポジトリと同じ、MITライセンスです。いろいろコードを変えて、データや表示がどう変わるかお試しください。
+
+```{r create_md, eval=TRUE, echo=FALSE}
+command <- "Rscript -e"
+command_args <- 'rmarkdown::render("r_in_30minutes.Rmd", rmarkdown::github_document(toc = TRUE, hard_line_breaks = TRUE, pandoc_args = c("--wrap=none")))'
+system(paste(command, command_args))
+```
