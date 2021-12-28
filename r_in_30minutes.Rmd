@@ -40,7 +40,7 @@ Sys.setlocale("LC_ALL", "ja_JP.UTF-8")
 ## knitではなく各コードチャンクを逐次実行するときは、以下を実行する
 install.packages("tidyverse")
 install.packages("assertthat")
-install.packages("cloc")
+install.packages("cloc", repos = c("https://cinc.rud.is", "https://cloud.r-project.org/"))
 install.packages("extrafont")
 install.packages("functional")
 install.packages("jsonlite")
@@ -51,6 +51,13 @@ install.packages("R6")
 install.packages("RColorBrewer")
 install.packages("reticulate")
 install.packages("rlang")
+
+## ドキュメント作成とコード整形
+## Rパッケージ(knitr, xfun) と pandocは、rocker/tidyverse に入っている
+install.packages("knitr")
+install.packages("lintr")
+install.packages("markdown")
+install.packages("styler")
 install.packages("xfun")
 ```
 

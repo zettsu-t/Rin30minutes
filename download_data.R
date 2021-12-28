@@ -10,7 +10,7 @@ download_data <- function() {
   dir.create(data_dir_name, showWarnings = FALSE)
 
   url_history <- "https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/jinko-setai-suii.files/jinkosetai-sui.csv"
-  url_202009 <- "https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/suikei01.files/e1yokohama2009.csv"
+  url_202009 <- "https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/suikei01.files/e1yokohama2112.csv"
   urls <- c(url_history, url_202009)
 
   all(purrr::map_lgl(urls, function(in_url) {

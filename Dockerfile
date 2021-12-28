@@ -24,25 +24,26 @@ RUN python3.8 -m pip install numpy
 
 ## Install R Packages without specifying their versions
 RUN R -e 'install.packages("remotes")'
-RUN Rscript -e 'remotes::install_version("knitr")'
-RUN Rscript -e 'remotes::install_version("markdown")'
 RUN Rscript -e 'remotes::install_version("assertthat")'
+RUN Rscript -e 'install.packages("cloc", repos = c("https://cinc.rud.is", "https://cloud.r-project.org/"))'
 RUN Rscript -e 'remotes::install_version("extrafont")'
 RUN Rscript -e 'remotes::install_version("functional")'
 RUN Rscript -e 'remotes::install_version("jsonlite")'
 RUN Rscript -e 'remotes::install_version("kableExtra")'
+RUN Rscript -e 'remotes::install_version("knitr")'
+RUN Rscript -e 'remotes::install_version("lintr")'
 RUN Rscript -e 'remotes::install_version("lubridate")'
+RUN Rscript -e 'remotes::install_version("markdown")'
 RUN Rscript -e 'remotes::install_version("plotly")'
+RUN Rscript -e 'remotes::install_version("R6")'
 RUN Rscript -e 'remotes::install_version("RColorBrewer")'
 RUN Rscript -e 'remotes::install_version("reticulate")'
 RUN Rscript -e 'remotes::install_version("rlang")'
-RUN Rscript -e 'remotes::install_version("R6")'
-RUN Rscript -e 'remotes::install_version("xfun")'
-RUN Rscript -e 'remotes::install_version("cloc", repos = c("https://cinc.rud.is", "https://cloud.r-project.org/"))'
 RUN Rscript -e 'remotes::install_version("styler")'
-RUN Rscript -e 'remotes::install_version("lintr")'
+RUN Rscript -e 'remotes::install_version("xfun")'
 
 ## A workaround to use extrafont
+RUN Rscript -e 'devtools::install_github("wch/extrafont")'
 RUN Rscript -e 'remotes::install_version("Rttf2pt1", version = "1.3.8")'
 ## Setup Japanese fonts for R
 RUN Rscript -e 'extrafont::font_import(prompt = FALSE)'

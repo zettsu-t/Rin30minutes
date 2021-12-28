@@ -37,12 +37,6 @@ docker run -e PASSWORD=yourpassword -p 8787:8787 -d r30min
 
 Dockerコンテナを起動したホスト [http://example.com:8787/](http://example.com:8787/) に、Webブラウザからログインすると、RStudio Serverの画面が出ます。ホスト名は適宜読み替えてください。
 
-WindowsのドライブをDockerコンテナにマウントするには、以下のように -v オプションを使います。ドライブ名を指定する:をつけるので、 -v オプションの引数に:が2回出ます。
-
-```{bash}
-docker run -e PASSWORD=yourpassword -p 8787:8787 -v c:/path/to/Rin30minutes:/home/rstudio/work -d r30min
-```
-
 ### 描画するデータを入手する
 
 後述の通り、描画するデータを横浜市のオープンデータのサイトからダウンロードします。敢えてDockerコンテナのビルド時ではなく、実行時にダウンロードするようにしています。
@@ -54,6 +48,12 @@ RStudio Server上で **download_data.R** を開き、Ctrl-Alt-R を押してこ�
 RStudio Server上で **r_in_30minutes.Rmd** を開き、**Knit** ボタンを押してHTMLに変換します。HTML文書が別ウィンドウで表示されますが、Webブラウザがポップアップウィンドウをブロックすると思いますので、ブロックを解除してください。
 
 変換後のHTMLファイルを、DockerコンテナからホストOSに移動することもできます。そのためにはDockerコンテナを起動する時に、ホストOSのファイルシステムをDockerコンテナにマウントする必要があります。具体的な方法は別途検索ください。おそらく、コンテナ上のユーザ rstudio と、ホストOSのユーザアカウントをあわせる必要があるでしょう。
+
+WindowsのドライブをDockerコンテナにマウントするには、以下のように -v オプションを使います。ドライブ名を指定する:をつけるので、 -v オプションの引数に:が2回出ます。
+
+```{bash}
+docker run -e PASSWORD=yourpassword -p 8787:8787 -v c:/path/to/Rin30minutes:/home/rstudio/work -d r30min
+```
 
 ### GitHub flavored markdown (GFM)に変換する
 
@@ -84,22 +84,27 @@ rmarkdown::render("r_in_30minutes.Rmd",
 
 ### 必要なパッケージをインストールする
 
-RStudioを開いて以下を実行して、 **r_in_30minutes.Rmd** が必要とするパッケージをインストールしてください。
+RStudioを開いて以下を実行して、 **r_in_30minutes.Rmd** が必要とするパッケージをインストールしてください。 Dockerを使う場合、親イメージ(rocker/tidyverse)に用意されているパッケージは、明示的にインストールする必要はありません。
 
 ```{r}
-install.packages("tidyverse")
 install.packages("assertthat")
+install.packages("cloc", repos = c("https://cinc.rud.is", "https://cloud.r-project.org/"))
 install.packages("extrafont")
 install.packages("functional")
 install.packages("jsonlite")
 install.packages("kableExtra")
+install.packages("knitr")
+install.packages("lintr")
 install.packages("lubridate")
+install.packages("markdown")
 install.packages("plotly")
+install.packages("R6")
 install.packages("RColorBrewer")
 install.packages("reticulate")
 install.packages("rlang")
+install.packages("styler")
+install.packages("tidyverse")
 install.packages("xfun")
-install.packages("cloc", repos = c("https://cinc.rud.is", "https://cloud.r-project.org/"))
 ```
 
 **r_in_30minutes.Rmd** が必要とするパッケージは、以下のbashスクリプトを実行すると得られます。 cloc パッケージはダウンロード元を指定する必要があります。
@@ -130,18 +135,7 @@ library(reticulate)
 reticulate::use_python("/path/to/python3")
 ```
 
-Windowsでは例えば以下のように設定します。
-
-- 環境変数PATHに、Pythonへのパスを通す。Windows版 Python 3.9.1の [完全版インストーラ](https://docs.python.org/ja/3/using/windows.html#windows-full)を使った場合は、 %LOCALAPPDATA%\Programs\Python\Python39 にパスを通すと思います。
-- 環境変数PATHに、Perlへのパスを通す。ここではPerlは [ActivePerl Community Edition](https://www.activestate.com/products/perl/downloads/) を想定しています。ディレクトリ構成が異なる場合やCygwin版 Perlを使う場合は適宜変更してください。
-- 環境変数 R_USER のディレクトリにある .Rprofile (なければ新規に作る)に以下のように書いてPATHを追加します。Cygwin pythonはPython2なので、WindowsのPython3が先に見つかるようにします。
-
-```{r}
-Sys.setenv(PATH=paste0(
-  c(gsub("/", "\\", file.path(Sys.getenv("LOCALAPPDATA"),
-    "Programs", "Python", "Python39"), fixed=TRUE),
-  "C:\\Perl64\\bin", Sys.getenv("PATH")), sep="", collapse=";"))
-```
+Windows では環境変数PATHに、Python と Perl へのパスを通します。 Perlは [Rtools](https://cran.r-project.org/bin/windows/Rtools/rtools40.html) に含まれている実行ファイルを使えばよいですが、Cygwin などを入れている場合は Rtools と混ざらないように環境変数PATHを設定します。
 
 NumPyがインストールされていなければ、インストールしてください。
 
