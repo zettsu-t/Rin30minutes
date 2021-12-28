@@ -1729,8 +1729,12 @@ sys.version
 
 本 R Markdown 文書のライセンスは、この文書がある GitHub レポジトリと同じ、MITライセンスです。いろいろコードを変えて、データや表示がどう変わるかお試しください。
 
-```{r create_md, eval=TRUE, echo=FALSE}
-command <- "Rscript -e"
-command_args <- 'rmarkdown::render("r_in_30minutes.Rmd", rmarkdown::github_document(toc = TRUE, hard_line_breaks = TRUE, pandoc_args = c("--wrap=none")))'
-system(paste(command, command_args))
+```{r create_md, message=FALSE, warning=FALSE, eval=FALSE, echo=FALSE}
+# RStudio の Console で実行する
+rmarkdown::render("r_in_30minutes.Rmd", rmarkdown::github_document(toc = TRUE, hard_line_breaks = TRUE, pandoc_args = c("--wrap=none")))
+```
+
+```{bash create_md_command, message=FALSE, warning=FALSE, eval=FALSE, echo=FALSE}
+# RStudio の Terminal で実行する
+Rscript -e 'rmarkdown::render("r_in_30minutes.Rmd", rmarkdown::github_document(toc = TRUE, hard_line_breaks = TRUE, pandoc_args = c("--wrap=none")))'
 ```

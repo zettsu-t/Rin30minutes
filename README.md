@@ -14,7 +14,7 @@ Releases にある、 r_in_30minutes.html をダウンロードしてご覧く�
 
 ### Dockerコンテナをビルドする
 
-Dockerfileがあるディレクトリ( **Rin30minutes/** 直下)に移動して、Dockerコンテナをビルドします。イメージ名は **r30min** とします。動作確認を Windows 10 + Docker Desktop および WSL2 + Ubuntu 18.04 LTS で行いました。必要なら sudo をつけて実行して下さい。
+Dockerfileがあるディレクトリ( **Rin30minutes/** 直下)に移動して、Dockerコンテナをビルドします。イメージ名は **r30min** とします。動作確認を Windows 10 + Docker Desktop で行いました。必要なら sudo をつけて実行して下さい。
 
 ```{bash}
 cd /path/to/Dockerfile
@@ -37,6 +37,12 @@ docker run -e PASSWORD=yourpassword -p 8787:8787 -d r30min
 
 Dockerコンテナを起動したホスト [http://example.com:8787/](http://example.com:8787/) に、Webブラウザからログインすると、RStudio Serverの画面が出ます。ホスト名は適宜読み替えてください。
 
+WindowsのドライブをDockerコンテナにマウントするには、以下のように -v オプションを使います。ドライブ名を指定する:をつけるので、 -v オプションの引数に:が2回出ます。
+
+```{bash}
+docker run -e PASSWORD=yourpassword -p 8787:8787 -v c:/path/to/Rin30minutes:/home/rstudio/work -d r30min
+```
+
 ### 描画するデータを入手する
 
 後述の通り、描画するデータを横浜市のオープンデータのサイトからダウンロードします。敢えてDockerコンテナのビルド時ではなく、実行時にダウンロードするようにしています。
@@ -48,6 +54,16 @@ RStudio Server上で **download_data.R** を開き、Ctrl-Alt-R を押してこ�
 RStudio Server上で **r_in_30minutes.Rmd** を開き、**Knit** ボタンを押してHTMLに変換します。HTML文書が別ウィンドウで表示されますが、Webブラウザがポップアップウィンドウをブロックすると思いますので、ブロックを解除してください。
 
 変換後のHTMLファイルを、DockerコンテナからホストOSに移動することもできます。そのためにはDockerコンテナを起動する時に、ホストOSのファイルシステムをDockerコンテナにマウントする必要があります。具体的な方法は別途検索ください。おそらく、コンテナ上のユーザ rstudio と、ホストOSのユーザアカウントをあわせる必要があるでしょう。
+
+### GitHub flavored markdown (GFM)に変換する
+
+RStudio Server の Console上で、rmarkdown::renderを実行します。デフォルトでは長い行を折り返しますが、改行をそのままHTML文書の改行にする markdown もあるので、下記のオプションの設定して折り返さない方がよいでしょう。
+
+```{r}
+rmarkdown::render("r_in_30minutes.Rmd",
+  rmarkdown::github_document(
+    toc = TRUE, hard_line_breaks = TRUE, pandoc_args = c("--wrap=none")))
+```
 
 ### Dockerfileは何をしているか
 
