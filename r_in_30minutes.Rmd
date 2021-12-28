@@ -24,8 +24,13 @@ urlcolor: blue
 
 ```{r get_format_table, include=FALSE}
 output_format <- knitr::opts_knit$get("rmarkdown.pandoc.to")
-if (output_format == "gfm-yaml_metadata_block") {
-  output_format <- "gfm"
+
+output_format <- if (is.null(output_format)) {
+  "html"
+} else if (output_format == "gfm-yaml_metadata_block") {
+  "gfm"
+} else {
+  output_format
 }
 
 is_html <- (output_format == "html")
@@ -383,11 +388,13 @@ to_embedded_table(df)
 print(df)
 ```
 
-`View` するとExcelっぽいウィンドウに表示する。ここには表示できないので、各自試してほしい。
+`View` するとExcelっぽいウィンドウに表示する。
 
 ```{r view_tibble, eval=FALSE, echo=TRUE, class.source="r-code", class.output="r-output"}
 View(df)
 ```
+
+![View(df)](images/view_df.png)
 
 tibble は、縦に標本を並べ、横に標本の属性を並べる。ざっくりいうと、縦に長いベクトル=すべての標本についてのそれぞれの属性を、横にいろいろと並べたものがtibbleと思えばよい。なので、先のリストの動作がそのまま当てはまる。
 

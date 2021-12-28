@@ -14,8 +14,8 @@ RUN curl -L "https://osdn.net/frs/redir.php?m=nchc&f=mix-mplus-ipa%2F72511%2Fmig
 RUN unzip "${FONT_ZIP}" -d "${FONT_DIR}"
 RUN rm "${FONT_ZIP}"
 
-## Install Python packages and set up for the R reticulate package
-RUN apt-get install -y libpython3-dev
+## Install Python packages and set up for R packages
+RUN apt-get install -y libpython3-dev libxt6
 ## -k options is possibly required behind an HTTP proxy
 RUN curl -k https://bootstrap.pypa.io/get-pip.py | python3.8
 RUN python3.8 -m pip install numpy
@@ -56,11 +56,13 @@ ENV LC_ALL ja_JP.UTF-8
 ## Copy a R Markdown document and files
 ARG R_USERNAME=rstudio
 ARG R_USER_GROUP_NAME="${R_USERNAME}:${R_USERNAME}"
-ARG TARGET_DIR="/home/${R_USERNAME}/Rin30minutes/"
+ARG TARGET_DIR="/home/${R_USERNAME}/Rin30minutes"
 
-RUN mkdir -p ${TARGET_DIR}/incoming_metadata
+RUN mkdir -p "${TARGET_DIR}/incoming_metadata"
+RUN mkdir -p "${TARGET_DIR}/images"
 COPY r_in_30minutes.Rmd "${TARGET_DIR}/"
 COPY download_data.R "${TARGET_DIR}/"
 COPY "incoming_metadata/*" "${TARGET_DIR}/incoming_metadata/"
+COPY "images/view_df.png*" "${TARGET_DIR}/images/"
 RUN chown "${R_USER_GROUP_NAME}" "${TARGET_DIR}"
 RUN find "${TARGET_DIR}" | xargs chown "${R_USER_GROUP_NAME}"

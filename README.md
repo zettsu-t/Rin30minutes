@@ -14,7 +14,7 @@ Releases にある、 r_in_30minutes.html をダウンロードしてご覧く�
 
 ### Dockerコンテナをビルドする
 
-Dockerfileがあるディレクトリ( **Rin30minutes/** 直下)に移動して、Dockerコンテナをビルドします。イメージ名は **r30min** とします。動作確認を Windows 10 + Docker Desktop で行いました。必要なら sudo をつけて実行して下さい。
+Dockerfileがあるディレクトリ( **Rin30minutes/** 直下)に移動して、Dockerコンテナをビルドします。イメージ名は **r30min** とします。動作確認を Windows 10 上のDockerで行いました。必要なら sudo をつけて実行して下さい。
 
 ```{bash}
 cd /path/to/Dockerfile
@@ -57,7 +57,7 @@ docker run -e PASSWORD=yourpassword -p 8787:8787 -v c:/path/to/Rin30minutes:/hom
 
 ### GitHub flavored markdown (GFM)に変換する
 
-RStudio Server の Console上で、rmarkdown::renderを実行します。デフォルトでは長い行を折り返しますが、改行をそのままHTML文書の改行にする markdown もあるので、下記のオプションの設定して折り返さない方がよいでしょう。
+RStudio Server の Console上で、 `rmarkdown::render` を実行します。デフォルトでは長い行を折り返しますが、改行をそのままHTML文書の改行にする markdown もあるので、下記のオプションの設定して折り返さない方がよいでしょう。
 
 ```{r}
 rmarkdown::render("r_in_30minutes.Rmd",
