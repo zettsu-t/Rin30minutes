@@ -12,9 +12,7 @@ RUN Rscript -e 'remotes::install_version("bayesplot")'
 ARG R_USERNAME=rstudio
 USER "${R_USERNAME}"
 
-RUN mkdir -p "/home/${R_USERNAME}/work"
 RUN Rscript -e 'cmdstanr::install_cmdstan()'
-
 ARG R_USER_GROUP_NAME="${R_USERNAME}:${R_USERNAME}"
 ARG TARGET_DIR="/home/${R_USERNAME}/Rin30minutes/"
 COPY stan_example.Rmd "${TARGET_DIR}/"

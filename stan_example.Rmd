@@ -116,7 +116,7 @@ plot(g)
 
 df %>%
   dplyr::group_by(label) %>%
-  dplyr::summarize_all(list(mean=mean, stddev=sd, n=length)) %>%
+  dplyr::summarize_all(list(mean = mean, stddev = sd, n = length)) %>%
   dplyr::ungroup() %>%
   kable() %>%
   kable_styling()
@@ -176,17 +176,23 @@ bayesplot::mcmc_hist を使う代わりに、 cmdstanr::CmdStanMCMC\$draws で�
 ```{r extract_samples, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
 extract_samples <- function(fit, var_name) {
   sample_set <- fit$draws()
-  var_indexes <- which(purrr::map_lgl(fit$metadata()$model_params,
-                       ~ stringr::str_detect(.x, var_name)))
+  var_indexes <- which(purrr::map_lgl(
+    fit$metadata()$model_params,
+    ~ stringr::str_detect(.x, var_name)
+  ))
   as.vector(matrix(sample_set[, , var_indexes], ncol = 1))
 }
 ```
 
 ```{r draw_mus, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
-df_mu1_sample <- tibble::tibble(y = extract_samples(fit = fit, var_name = "mu.*1"),
-                                label = "mu1")
-df_mu2_sample <- tibble::tibble(y = extract_samples(fit = fit, var_name = "mu.*2"),
-                                label = "mu2")
+df_mu1_sample <- tibble::tibble(
+  y = extract_samples(fit = fit, var_name = "mu.*1"),
+  label = "mu1"
+)
+df_mu2_sample <- tibble::tibble(
+  y = extract_samples(fit = fit, var_name = "mu.*2"),
+  label = "mu2"
+)
 df_mus_sample <- dplyr::bind_rows(df_mu1_sample, df_mu2_sample) %>%
   dplyr::mutate(label = factor(label))
 
@@ -215,13 +221,19 @@ draw_samples <- function(fit, var_name, x_pos, curve_color, line_color) {
   plot(g)
 }
 
-draw_samples(fit = fit, var_name = "sigma_s", x_pos = sd(df_small$y),
-  curve_color = "royalblue3", line_color = "navy")
+draw_samples(
+  fit = fit, var_name = "sigma_s", x_pos = sd(df_small$y),
+  curve_color = "royalblue3", line_color = "navy"
+)
 
-draw_samples(fit = fit, var_name = "sigma_l", x_pos = sd(df_large$y),
-  curve_color = "orange", line_color = "orange4")
+draw_samples(
+  fit = fit, var_name = "sigma_l", x_pos = sd(df_large$y),
+  curve_color = "orange", line_color = "orange4"
+)
 
-draw_samples(fit = fit, var_name = "theta",
-  x_pos = NROW(df_small)/(NROW(df_small) + NROW(df_large)),
-  curve_color = "gray30", line_color = "black")
+draw_samples(
+  fit = fit, var_name = "theta",
+  x_pos = NROW(df_small) / (NROW(df_small) + NROW(df_large)),
+  curve_color = "gray30", line_color = "black"
+)
 ```

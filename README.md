@@ -55,7 +55,7 @@ WindowsのドライブをDockerコンテナにマウントするには、以下�
 docker run -e PASSWORD=yourpassword -p 8787:8787 -v c:/path/to/Rin30minutes:/home/rstudio/work -d r30min
 ```
 
-### GitHub flavored markdown (GFM)に変換する
+### GitHub flavored markdown (GFM) に変換する
 
 RStudio Server の Console上で、 `rmarkdown::render` を実行します。デフォルトでは長い行を折り返しますが、改行をそのままHTML文書の改行にする markdown もあるので、下記のオプションの設定して折り返さない方がよいでしょう。
 
