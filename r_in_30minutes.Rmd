@@ -708,7 +708,7 @@ seq(-2)
 seq_len(-2)
 ```
 
-さて差が整数ではない等差数列は、丸め誤差が発生するので、予想した長さにならないことがある。以下はPythonのコードである。 `NumPy.linspace` は数列の長さを指定するので正しい個数になるが、 `NumPy.arrange` は丸め誤差の影響で個数が合わないことがある。
+さて差が整数ではない等差数列は、丸め誤差が発生するので、予想した長さにならないことがある。以下はPythonのコードである。 `numpy.linspace` は数列の長さを指定するので正しい個数になるが、 `numpy.arrange` は丸め誤差の影響で個数が合わないことがある。
 
 ```{python linspace_python, class.source="python-code", class.output="python-output"}
 import numpy as np
@@ -757,7 +757,7 @@ elapsed_time_in_year(year = 2021, ratio = 0.162)
 elapsed_time_in_year(year = 2020, ratio = 0.162)
 ```
 
-時間 (duration)を説明するついでに関数合成しよう。 `functional::Compose` は二つの関数を合成する。ここでは `hh:mm:ss` 書式の時間の文字列を受け取って、何秒か返す関数を作る。 `function` を使っても同じことをできるが、引数を書かなくて済むのですっきりする。
+時間 (duration)を説明するついでに関数合成しよう。 `functional::Compose` は二つの関数を合成する。ここでは `hh:mm:ss` 書式の時間の文字列を受け取って、何秒か返す関数を作る。 `function` を使っても同じことをできるが、引数を書いて値を転送しなくても済むのですっきりする。
 
 ```{r hms_to_seconds, class.source="r-code", class.output="r-output"}
 library(functional)
@@ -1223,7 +1223,7 @@ g <- g + ylab("人口")
 g <- g + theme_bw()
 g <- g + theme(
   aspect.ratio = 0.6,
-  text = element_text(family = font_name),
+  text = element_text(family = font_name_jp),
   axis.text = element_text(family = font_name_jp, size = 12),
   axis.title = element_text(family = font_name_jp, size = 16),
   plot.title = element_text(family = font_name_jp, size = 20)
@@ -1309,7 +1309,7 @@ df_whole_city %>%
   to_embedded_table()
 ```
 
-`dplyr::select` は列名を文字列で指定したが、 `dplyr::filter` の ward は "" が無いので文字列ではない。これは先ほど説明したシンボル(symbol)である。今回のように各区はwardという列にある、と分かっているときはこのようにハードコーディングしてよいが、実行時に文字列で与えたいことがあるだろう。そのときは `!!rlang::sym` を使う。
+`dplyr::select` は列名を文字列で指定したが、 `dplyr::filter` の ward は "" が無いので文字列ではない。これは先ほど説明したシンボル(symbol)である。今回のように各区はwardという列にある、と分かっているときはこのようにハードコーディングしてよいが、実行時に文字列変数で与えたいことがあるだろう。そのときは `!!rlang::sym` を使う。
 
 ```{r import_rlang, message=FALSE, warning=FALSE, class.source="r-code", class.output="r-output"}
 library(rlang)
@@ -1522,9 +1522,6 @@ as.integer(df_factor$tax_office)
 
 先ほどとは整数の割り当てが異なる。図にしたとき、凡例が五十音順になることを確かめよう。
 
-
-
-
 ```{r draw_relevel_tax_offices, class.source="r-code", class.output="r-output"}
 library(RColorBrewer)
 g <- ggplot(df_factor)
@@ -1544,10 +1541,10 @@ g <- g + theme(
   legend.position = "right",
   legend.text = element_text(family = font_name_jp, size = 16),
   legend.title = element_text(family = font_name_jp, size = 16),
-  axis.text = element_text(family = font_name, size = 16),
-  axis.title = element_text(family = font_name, size = 14),
-  strip.text = element_text(family = font_name, size = 20),
-  plot.title = element_text(family = font_name, size = 20)
+  axis.text = element_text(family = font_name_jp, size = 16),
+  axis.title = element_text(family = font_name_jp, size = 14),
+  strip.text = element_text(family = font_name_jp, size = 20),
+  plot.title = element_text(family = font_name_jp, size = 20)
 )
 plot(g)
 ```
@@ -1571,10 +1568,10 @@ g <- g + theme(
   aspect.ratio = 0.8,
   text = element_text(family = font_name_jp),
   legend.position = "none",
-  axis.text = element_text(family = font_name, size = 9),
-  axis.title = element_text(family = font_name, size = 10),
-  strip.text = element_text(family = font_name, size = 12),
-  plot.title = element_text(family = font_name, size = 12)
+  axis.text = element_text(family = font_name_jp, size = 9),
+  axis.title = element_text(family = font_name_jp, size = 10),
+  strip.text = element_text(family = font_name_jp, size = 12),
+  plot.title = element_text(family = font_name_jp, size = 12)
 )
 plot(g)
 ```
@@ -1672,7 +1669,7 @@ lintr よくある指摘は以下の通りである。
 
 ### コードの論理行数
 
-cloc パッケージで、ファイルの論理行、コメント行、空行を数えることができる。Rだけでなくさまざまなプログラミング言語に対応している。Perl が必要なので、Windows の場合は perl.exe がある場所にPATHを通しておく。ファイル名だけでなくURLを指定することもできる。[A Shiny app developed with the golem package](https://github.com/zettsu-t/nbinomPlot) にあるファイルの行数を測ろう。
+cloc パッケージで、ファイルの論理行、コメント行、空行を数えることができる。Rだけでなくさまざまなプログラミング言語に対応している。Perl が必要なので、Windows の場合は perl.exe がある場所にPATHを通しておく。ファイル名だけでなくURLを指定することもできる。[A Shiny app developed with the golem package](https://github.com/zettsu-t/nbinomPlot) にあるファイルの行数を測ろう(以下の行数は測定当時)。
 
 ```{r cloc, eval=FALSE, echo=TRUE, class.source="r-code", class.output="r-output"}
 library(cloc)
@@ -1684,8 +1681,8 @@ cloc::cloc_pkg() %>%
 
 |language | file_count|  loc| blank_lines| comment_lines|
 |:--------|----------:|----:|-----------:|-------------:|
-|R        |         44| 1228|         218|           434|
-|C++      |          1|   15|           2|             3|
+|R        |         41| 1154|         201|           425|
+|C++      |          2|   51|          10|            19|
 
 ### パッケージ化
 
@@ -1703,7 +1700,7 @@ Pythonで wheelパッケージを作成して成果物を配布できるのと�
 - 「みんなのR 第2版」 (原著: R for Everyone 2nd edition)、「パーフェクトR」もよいでしょう。
 - RStudioだけでなくコマンドラインを使いこなしたいなら、「バイオインフォマティクスデータスキル」 (原著: Bioinformatics Data Skills)
 - プログラミング言語Rを深く知りたいなら、「R言語徹底解説」(ただし和訳は版が古い、原著: [Advanced R](https://adv-r.hadley.nz/) )。 [公式マニュアル](https://cran.r-project.org/manuals.html)より読みやすいと思います。
-- Rパッケージの作成を通じて、配布可能な成果物の作り方を学びたいなら、「Rパッケージ開発入門 テスト、文書化、コード共有の手法を学ぶ」(原著 : [R packages](http://r-pkgs.had.co.nz/) )
+- Rパッケージの作成を通じて、配布可能な成果物の作り方を学びたいなら、「Rパッケージ開発入門 テスト、文書化、コード共有の手法を学ぶ」(原著 : [R Packages](http://r-pkgs.had.co.nz/) )
 - ブラウザから対話的に表示を変えたいなら、Shinyの使い方を学ぶ。「RとShinyで作るWebアプリケーション」を読んでから、[Mastering Shiny](https://mastering-shiny.org/)を読み、そのあと[Engineering Production-Grade Shiny Apps](https://engineering-shiny.org/)を読むとよいでしょう。
 - Rだけでは足りなくて、C++で処理を書きたいなら、 [みんなのRcpp](https://teuder.github.io/rcpp4everyone_ja/) を読んで Rcppパッケージを使います。
 
@@ -1716,7 +1713,7 @@ Pythonで wheelパッケージを作成して成果物を配布できるのと�
 |R for Everyone 2nd edition|Jared P. Lander|2017|Addison-Wesley Professional|
 |Bioinformatics Data Skills|Vince Buffalo|2015|O'Reilly Media|
 |Advanced R 2nd edition|Hadley Wickham|2019|https://adv-r.hadley.nz/|
-|R packages|Hadley Wickham|2015|http://r-pkgs.had.co.nz/|
+|R Packages|Hadley Wickham|2015|http://r-pkgs.had.co.nz/|
 |Mastering Shiny|Hadley Wickham|2020|https://mastering-shiny.org/|
 |Engineering Production-Grade Shiny Apps|Colin Fay, Sébastien Rochette, Vincent Guyader and Cervan Girard|2021|https://engineering-shiny.org/|
 
