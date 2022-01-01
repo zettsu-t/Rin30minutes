@@ -52,7 +52,7 @@ library(posterior)
 library(bayesplot)
 ```
 
-### Stanをインストールする。
+### Stanをインストールする
 
 Dockerイメージを作成するときに、下記を実行してrstudioユーザ権限でStanをインストールした。下記ではコメントアウトしたが、# を外して 本 R Markdown ファイルをknitすると cmdstan をインストールする。
 

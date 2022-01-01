@@ -1,6 +1,6 @@
 # Pythonプログラマが30分でわかるR
 
-Copyright (c) 2021 Zettsu Tatsuya
+Copyright (c) 2021-2022 Zettsu Tatsuya
 
 Pythonで機械学習や統計的分析をするプログラマが、Rを使うために最低限必要なことをまとめました。
 
