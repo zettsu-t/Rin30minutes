@@ -1,0 +1,68 @@
+on:
+  push:
+    branches:
+      - main
+      - master
+      - makedoc
+  pull_request:
+    branches:
+      - main
+      - master
+
+name: Make-doc
+
+jobs:
+  Make-doc:
+    runs-on: ubuntu-20.04
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      LANG: ja_JP.UTF-8
+      LANGUAGE: ja_JP:ja
+      LC_ALL: ja_JP.UTF-8
+    steps:
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-pandoc@v1
+      - uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: 4.1.2
+
+      - name: Install R package dependencies
+        run: |
+          sudo apt-get install -y libcairo2-dev libcurl4-openssl-dev libgit2-dev libicu-dev libpng-dev libpython3-dev libssl-dev libtbb2 libxml2-dev libxt6 libxt-dev curl git-core pandoc pandoc-citeproc qpdf zlib1g-dev
+
+      - name: Install a language pack
+        run: |
+          sudo apt-get install -y language-pack-ja
+          sudo update-locale LANG=ja_JP.UTF-8
+          sudo locale-gen ja_JP.UTF-8
+
+      - name: Install Japanese fonts
+        run: |
+          sudo curl -L "https://osdn.net/frs/redir.php?m=nchc&f=mix-mplus-ipa%2F72511%2Fmigu-1m-20200307.zip" -o /usr/share/fonts/truetype/migu-1m-20200307.zip
+          sudo unzip /usr/share/fonts/truetype/migu-1m-20200307.zip -d /usr/share/fonts/truetype
+          sudo rm /usr/share/fonts/truetype/migu-1m-20200307.zip
+
+      - name: Install R packages
+        run: |
+          install.packages(c("remotes", "devtools"))
+          install.packages(c("assertthat", "extrafont", "functional", "jsonlite", "kableExtra", "knitr", "lintr", "lubridate", "markdown", "plotly", "R6", "RColorBrewer", "reticulate", "rlang", "styler", "xfun"))
+          devtools::install_github("wch/extrafont")
+          remotes::install_version("cloc", repos = c("https://cinc.rud.is", "https://cloud.r-project.org/"))
+          remotes::install_version("Rttf2pt1", version = "1.3.8")
+          remotes::install_version("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+          install.packages(c("posterior", "bayesplot"))
+        shell: Rscript {0}
+
+      - name: Setup R packages
+        run: |
+          extrafont::font_import(prompt = FALSE)
+          reticulate::install_miniconda()
+          cmdstanr::install_cmdstan()
+        shell: Rscript {0}
+
+      - name: Make documents
+        run: |
+          rmarkdown::render("r_in_30minutes.Rmd", output_format = "html_document")
+          rmarkdown::render("r_in_30minutes.Rmd", rmarkdown::github_document(toc = TRUE, hard_line_breaks = TRUE, pandoc_args = c("--wrap=none")))
+          rmarkdown::render("stan_example.Rmd", output_format = "html_document")
+        shell: Rscript {0}
