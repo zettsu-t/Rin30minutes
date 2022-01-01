@@ -1733,7 +1733,7 @@ Pythonで wheelパッケージを作成して成果物を配布できるのと�
 
 ## データ出典
 
-本 R Markdown からHTML文書やPDF文書を生成した場合、 [横浜市のオープンデータ](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/) を編集・加工したものが埋め込まれます。これらは [利用条件等](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/opendata.html) に記載の、 CC BY 4.0 に基づいています。
+本 R Markdown からHTML文書やPDF文書を生成した場合、 [横浜市のオープンデータ](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/) を編集・加工したものが埋め込まれます。これらは [利用条件等](https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/opendata.html) に記載の、 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.ja) に基づいています。
 
 ## その他
 
