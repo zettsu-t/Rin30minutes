@@ -45,7 +45,7 @@ jobs:
       - name: Install R packages
         run: |
           install.packages(c("remotes", "devtools"))
-          install.packages(c("assertthat", "extrafont", "functional", "jsonlite", "kableExtra", "knitr", "lintr", "lubridate", "markdown", "plotly", "R6", "RColorBrewer", "reticulate", "rlang", "styler", "xfun"))
+          install.packages(c("assertthat", "extrafont", "functional", "jsonlite", "kableExtra", "knitr", "lintr", "lubridate", "markdown", "plotly", "R6", "RColorBrewer", "reticulate", "rlang", "styler", "tidyverse", "xfun"))
           devtools::install_github("wch/extrafont")
           remotes::install_version("cloc", repos = c("https://cinc.rud.is", "https://cloud.r-project.org/"))
           remotes::install_version("Rttf2pt1", version = "1.3.8")
