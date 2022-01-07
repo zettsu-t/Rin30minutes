@@ -92,7 +92,7 @@ to_embedded_table <- function(df) {
 
 本文書の [GitHubレポジトリ](https://github.com/zettsu-t/Rin30minutes) に、インストール手順があるのでそれに従う。
 
-準備ができたら、以下のコードを RStudio の Console に順に入力して実行する。Rスクリプトを実行するときは、拡張 .R のファイルにコードを書いて、シェルから Rscript を起動する。
+準備ができたら、以下のコードを RStudio の Console に順に入力して実行する。Rスクリプトを実行するときは、拡張子 .R のファイルにコードを書いて、シェルから Rscript を起動する。
 
 ## プログラミング言語Rの基本
 
@@ -114,7 +114,7 @@ to_embedded_table <- function(df) {
 2 + TRUE
 ```
 
-NA (欠測値 : missing value) と、変数に対応するオブジェクトが無い (NULL) ことを区別する。変数がNAかどうかは `is.na` で、NULLかどうかは `in.null` で調べる。これらの細かい仕様は省略する。
+NA (欠測値 : missing value) と、変数に対応するオブジェクトが無い (NULL) ことを区別する。変数がNAかどうかは `is.na` で、NULLかどうかは `is.null` で調べる。これらの細かい仕様は省略する。
 
 ```{r is_na, class.source="r-code", class.output="r-output"}
 is.na(0)
@@ -225,7 +225,7 @@ c(10, 20, 30) + c(4, 5, 6)
 max(c(10, 20, 30))
 ```
 
-2つのベクトルの要素ごとの max を取りたい、つまり map したいなら、 `pmax` を使う。
+2つのベクトルの要素ごとの max を取りたい、つまり map したいなら、 `pmax` を使う。 `pmax` は長さ(要素数)nである単一または複数のベクトルの、第1要素同士を比べて最も大きい値, 第2要素同士を比べて最も大きい値 ... , 第n要素同士を比べて最も大きい値を返す。
 
 ```{r pmax_vectors, class.source="r-code", class.output="r-output"}
 pmax(c(10, 2, 30), c(4, 50, 6))
@@ -734,6 +734,24 @@ purrr::map_chr(50:52, function(x) {
 
 ```{r launch_invisible, class.source="r-code", class.output="r-output"}
 invisible(1:20000)
+```
+
+### 集合演算
+
+二つのベクトルA, Bについて、和集合(A, Bの少なくとも片方に属する要素)、積集合(A, B の両方に属する要素)、差集合(A=左にあって、B=右にない要素)を、それぞれ `union`, `intersect`, `setdiff` で求める。 setdiff は非対称なので、引数を入れ替えると結果が変わることがある。
+
+```{r set_operations, class.source="r-code", class.output="r-output"}
+union(1:4, 3:7)
+intersect(1:4, 3:7)
+setdiff(1:4, 3:7)
+setdiff(3:7, 1:4)
+```
+
+ベクトルAの各要素がベクトルBに含まれているかどうかを調べるために、 `A %in% B` を使うと、含まれている=TRUE または 含まれていない=FALSE からなるベクトルを返す。演算子のヘルプを見るには、 `` ?`%in%` `` というように演算子を ` (backtick) で囲む。
+
+```{r in_operator, class.source="r-code", class.output="r-output"}
+1:7 %in% 3:4
+3:4 %in% 1:7
 ```
 
 ### 日時と時刻
