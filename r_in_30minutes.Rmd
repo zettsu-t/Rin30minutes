@@ -692,6 +692,32 @@ NAは後でどうにかするので警告を無視したいなら、 `suppressWa
 suppressWarnings(as.numeric("abc"))
 ```
 
+### 短絡評価
+
+Python の `A and B` は、A-ならば-Bという短絡評価である。短絡評価とは、Aが成立しなければBは評価しないということである。同様に `A or B` は、A-さもなくば-Bという短絡評価である(Aが成立すればBは評価しない)。And を「かつ」、 or を「または」と訳すのは論理演算であって、短絡評価では「ならば」「さもなくば」と訳すのが正しい。
+
+ある名前のファイルが空でないかどうか調べるには、その名前のファイルが存在することをまず確かめなければならない。
+
+```{python short_circuit_python, result="asis", error=TRUE, class.source="python-code", class.output="python-output"}
+import os
+def non_empty_file(filename):
+  return os.path.isfile(filename) and (not (os.path.getsize(filename) == 0))
+
+non_empty_file("r_in_30minutes.Rmd")
+non_empty_file("_file_does_not_exist")
+```
+
+Rの短絡評価は、and の代わりに `&&` 、or の代わりに `||` という演算子を用いる。ついでに not は `!` である。これらはC++と同じである。
+
+```{r short_circuit_r, class.source="r-code", class.output="r-output"}
+non_empty_file <- function(filename) {
+  file.exists(filename) && !(file.info(filename)$size == 0)
+}
+
+non_empty_file("r_in_30minutes.Rmd")
+non_empty_file("_file_does_not_exist")
+```
+
 ### 等差数列
 
 Pythonの `range` と同様のことをしたければ、Rには `seq` とか `1:n` とかがある。Pythonと異なりRは閉区間であり、区間の開始と終了の両方を要素に含む。また、開始番号が終了番号より小さいと、1ずつ減る数列が得られる。ベクトルのインデックスを得る場合に、これだと空のベクトルのインデックスが `c(1, 0)` になってまずい。 `seq_len` を積極的に使おう。
@@ -754,7 +780,7 @@ setdiff(3:7, 1:4)
 3:4 %in% 1:7
 ```
 
-### 日時と時刻
+### 日時と時間
 
 日時(date)と時刻(timestamp)を上手く扱うのは難しいので、よくできたパッケージを上手に使いこなす。一年の初めからどれだけの割合(0以上1以下)が経過したか指定すると、その日時を表示する関数を作る。うるう年は考慮するがうるう秒は考慮しない。あるツイートにあった、[1月4日のお昼には、もう2021年の「1%」が経過している](https://twitter.com/kuina_ch/status/1344513191707963392)のは本当だろうか?
 
