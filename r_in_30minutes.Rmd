@@ -139,6 +139,8 @@ FALSE & NA
 FALSE | NA
 ```
 
+数値には整数と浮動小数がある。ここでは型変換やオーバーフローなどの細かい説明は省略して、Pythonと同様に整数か浮動小数かを意識して計算すればそうなる、ということで話を進める。Python組み込みのintは桁数に上限が無い(任意精度整数)。Rの整数は、NumPyのint32のようなものである。
+
 NAは logical, numeric, character と、それぞれの型に用意されている。実は logical → numeric → character という変換は、必要なら暗黙に行われるので、あまり気にしなくてよい。さっきの `2 + TRUE` がそうだった。
 
 数値が NA (欠測値)、正の無限大 Inf、負の無限大 -Inf、NaN (非数 : Not a Number)であることを区別する。`is.na`, `is.infinite`, `is.nan` を使って調べる。 `==` では比較しないことに注意する。RはNAとNaNを区別するので便利である(入力値が欠測なことと、計算結果がNaNであることは別なので)。
@@ -696,7 +698,7 @@ suppressWarnings(as.numeric("abc"))
 
 Python の `A and B` は、A-ならば-Bという短絡評価である。短絡評価とは、Aが成立しなければBは評価しないということである。同様に `A or B` は、A-さもなくば-Bという短絡評価である(Aが成立すればBは評価しない)。And を「かつ」、 or を「または」と訳すのは論理演算であって、短絡評価では「ならば」「さもなくば」と訳すのが正しい。
 
-ある名前のファイルが空でないかどうか調べるには、その名前のファイルが存在することをまず確かめなければならない。
+ある名前のファイルが空でないかどうか調べるには、その名前のファイルが存在することをまず確かめなければならない。ファイルがあればそのサイズを取得する(なければ取得しない)のが短絡評価の使い方である。
 
 ```{python short_circuit_python, result="asis", error=TRUE, class.source="python-code", class.output="python-output"}
 import os
@@ -716,6 +718,13 @@ non_empty_file <- function(filename) {
 
 non_empty_file("r_in_30minutes.Rmd")
 non_empty_file("_file_does_not_exist")
+```
+
+`&` や `|` は `+` と同様、ベクトルの各要素に対して and や or を取る。うっかり間違えて `&&` や `||` と書いた場合、ベクトルの最初の要素についてだけ結果を返し、ベクトルの要素が複数個あってもエラーにはならない。
+
+```{r element_wise_and, error=TRUE, class.source="r-code", class.output="r-output"}
+c(FALSE, TRUE, TRUE) & c(NA, TRUE, NA)
+c(FALSE, TRUE, TRUE) && c(NA, TRUE, NA)
 ```
 
 ### 等差数列
