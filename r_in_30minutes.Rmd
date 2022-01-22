@@ -79,11 +79,11 @@ library(xfun)
 to_embedded_table <- function(df) {
   if (output_format == "gfm") {
     df %>%
-      kable("pipe")
+      kableExtra::kable("pipe")
   } else {
     df %>%
-      kable() %>%
-      kable_styling()
+      kableExtra::kable() %>%
+      kableExtra::kable_styling()
   }
 }
 ```
@@ -1712,7 +1712,7 @@ Rは styler パッケージでコードを整形して、 lintr パッケージ�
 
 lintr で問題点を挙げるとき、スクリプトが完成してから lintr を通すと大量の問題点を指摘されて降参しかねないので、毎日細かく通すとよい。CI (Continuous Integration) を使っているなら、毎登録 (git push) ごとにすればよい。もちろん lintr の前に、 styler で自動的に整形することもできる。
 
-lintr よくある指摘は以下の通りである。
+lintr で、よくある指摘は以下の通りである。
 
 - Cyclomatic complexity が大きすぎる。関数が複雑すぎて、理解もテストもできないだろう。小さな関数に分割して、Cyclomatic complexity を減らす。 pylint だと、関数が長い、分岐が多いといった類似の指摘事項が出る。
 - `1:NROW(aTibble)` は、aTibble が空行のときに誤動作する。代わりに `seq_len(NROW(aTibble))` を使う。このようによくある間違ったイディオムを指摘する。Pythonでは、 `range(len(anObj))` の代わりに `enumrate(anObj)` を使え、と指摘されることがある。
@@ -1750,6 +1750,7 @@ Pythonで wheelパッケージを作成して成果物を配布できるのと�
 - 最初に読むのは、「Rではじめるデータサイエンス」 (原著: [R for Data Science](https://r4ds.had.co.nz/) )
 - Rをもっと使いこなすなら、「Rクックブック 第2版」 (原著: [R Cookbook 2nd Edition](https://rc2e.com/) )
 - RStudioとR Markdownの使い方を学ぶなら、「再現可能性のすゝめ ―RStudioによるデータ解析とレポート作成― (Wonderful R 3)」 または、 「改訂2版 Rユーザのための RStudio［実践］入門 ―tidyverseによるモダンな分析フローの世界―」
+- RStudioを用いたより進んだ話題は、「Rが生産性を高める 〜データ分析ワークフロー効率化の実践」
 - 「みんなのR 第2版」 (原著: R for Everyone 2nd edition)、「パーフェクトR」もよいでしょう。
 - RStudioだけでなくコマンドラインを使いこなしたいなら、「バイオインフォマティクスデータスキル」 (原著: Bioinformatics Data Skills)
 - プログラミング言語Rを深く知りたいなら、「R言語徹底解説」(ただし和訳は版が古い、原著: [Advanced R](https://adv-r.hadley.nz/) )。 [公式マニュアル](https://cran.r-project.org/manuals.html)より読みやすいと思います。
@@ -1776,6 +1777,7 @@ Pythonで wheelパッケージを作成して成果物を配布できるのと�
 |Rクックブック 第2版|J.D. Long, Paul Teetor 著/大橋真也 監訳/木下哲也 訳|2020|オライリー・ジャパン|
 |再現可能性のすゝめ ―RStudioによるデータ解析とレポート作成― (Wonderful R 3)|高橋康介 著/石田基広 監修/市川太祐, 高橋康介, 高柳慎一, 福島真太朗, 松浦健太郎 編|2018|共立出版|
 |改訂2版 Rユーザのための RStudio［実践］入門 ―tidyverseによるモダンな分析フローの世界―|松村優哉, 湯谷啓明, 紀ノ定保礼, 前田和寛 著|2021|技術評論社|
+|Rが生産性を高める 〜データ分析ワークフロー効率化の実践|igjit，atusy，hanaori 著|2022|技術評論社|
 |みんなのR 第2版|Jared P. Lander 著/高柳慎一, 津田真樹, 牧山幸史, 松村杏子, 簑田高志 監修|2018|マイナビ出版|
 |パーフェクトR|Rサポーターズ 著|2017|技術評論社|
 |バイオインフォマティクスデータスキル オープンソースツールを使ったロバストで再現性のある研究|Vince Buffalo 著/片山俊明, 川島秀一, 鈴木治夫, 山本泰智 監訳/酒匂寛, 山村吉信 訳|2020|オライリー・ジャパン|
