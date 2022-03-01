@@ -164,3 +164,23 @@ docker build -t r30min .
 docker build -f Dockerfile_stan -t stan .
 docker run -e PASSWORD=yourpassword -p 8787:8787 -d stan
 ```
+
+## Rプログラマが30分ではじめるJulia
+
+RからC++をRcpp経由で使えるように、RからJuliaを使うことができます。Stanを使うDockerコンテナに、Juliaと、RからJuliaを使うためのパッケージを追加します。Dockerコンテナをビルド、起動するには、以下のコマンドを実行します。
+
+```{bash}
+cd /path/to/Dockerfile
+docker build -t r30min .
+docker build -f Dockerfile_stan -t stan .
+docker build -f Dockerfile_julia -t julia .
+docker run -e PASSWORD=yourpassword -p 8787:8787 -d julia
+```
+
+整数のビット1の個数を数える(population count)も、この通り。
+
+```{r}
+library(JuliaConnectoR)
+popcount <- juliaEval("xs -> map(x -> count_ones(x), xs)")
+popcount(as.integer(0:15))
+```

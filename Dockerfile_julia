@@ -1,0 +1,12 @@
+FROM stan
+
+## Install Julia
+ARG JULIA_VERSION="julia-1.7.2"
+ARG JULIA_FILENAME="${JULIA_VERSION}-linux-x86_64.tar.gz"
+RUN curl -L "https://julialang-s3.julialang.org/bin/linux/x64/1.7/${JULIA_FILENAME}" -o "${JULIA_FILENAME}"
+RUN tar xf "${JULIA_FILENAME}"
+RUN mv "${JULIA_VERSION}" /opt/julia
+
+## Set up R to call Juila
+RUN Rscript -e 'remotes::install_version("JuliaConnectoR")'
+ENV PATH="/opt/julia/bin:${PATH}"
